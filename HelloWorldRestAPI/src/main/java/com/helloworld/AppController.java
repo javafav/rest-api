@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppController {
 
 	@GetMapping("/api/hello")
-	public String showHelloMessage() {
-		return "Hello world REST API . The current time is: " +  new Date();
+	public Response showHelloMessage() {
+	//	return "Hello world REST API . The current time is: " +  new Date();
+		return new Response("Hello world REST API");  
 	}
 }
