@@ -4,14 +4,17 @@ import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.skyapi.weatherforecast.common.Location;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/v1/locations")
-public class LocationApiController {
+public class LocationApiController{
 
 	private LocationService service;
 
@@ -21,10 +24,10 @@ public class LocationApiController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Location> add(Location location){
+	public ResponseEntity<Location> add(@RequestBody @Valid Location location){
 		
 		Location addedLocation = service.add(location);
-		URI uri = URI.create("/v1/locations/" + location.getCode());
+		URI uri = URI.create("/v1/locations/" + addedLocation.getCode());
 		
 		return ResponseEntity.created(uri).body(addedLocation);
 	}

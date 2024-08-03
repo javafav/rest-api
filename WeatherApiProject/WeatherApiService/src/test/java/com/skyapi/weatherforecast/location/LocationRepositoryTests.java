@@ -26,7 +26,7 @@ public class LocationRepositoryTests {
 		Location location = new Location();
 		location.setCode("UCH");
 		location.setCityName("Uch Sharif");
-		location.setReigonName("Bahwalpur");
+		location.setRegionName("Bahwalpur");
 		location.setCounrtyCode("PK");
 		location.setCountryName("Pakistan");
 		
