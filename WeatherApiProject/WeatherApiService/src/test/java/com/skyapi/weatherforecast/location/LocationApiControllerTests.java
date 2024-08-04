@@ -2,11 +2,15 @@ package com.skyapi.weatherforecast.location;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collection;
+import java.util.Collections;import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -62,6 +66,48 @@ public class LocationApiControllerTests {
 		                                  .andExpect(jsonPath("$.city_name", is("Uch Sharif")))
 		                                  .andExpect(header().string("Location", "/v1/locations/UCH_PK"))
 		                                  .andDo(print());
+		
+		
+	}
+	
+	@Test
+	public void testListShouldReturn204NoContent() throws Exception {
+		Mockito.when(service.list()).thenReturn(Collections.emptyList());
+		
+		mockMvc.perform(get(END_URI_PATH))
+		       .andExpect(status().isNoContent())
+		       .andDo(print());
+		   
+	}
+	
+	
+	@Test
+	public void testShouldReturn200OK() throws Exception {
+		Location location1 = new Location();
+		location1.setCode("UCH_PK");
+		location1.setCityName("Uch Sharif");
+		location1.setRegionName("Bahwalpur");
+		location1.setCounrtyCode("PK");
+		location1.setCountryName("Pakistan");
+		
+		
+		Location location2 = new Location();
+		location2.setCode("MUX_PK");
+		location2.setCityName("Multan");
+		location2.setRegionName("multan");
+		location2.setCounrtyCode("PK");
+		location2.setCountryName("Pakistan");
+		
+		Mockito.when(service.list()).thenReturn(List.of(location1, location2));
+		
+		mockMvc.perform(get(END_URI_PATH))
+                .andExpect(status() .isOk())
+                .andExpect(jsonPath("$[0].code", is("UCH_PK")))
+                .andExpect(jsonPath("$[0].city_name", is("Uch Sharif")))
+                .andExpect(jsonPath("$[1].code", is("MUX_PK")))
+                .andExpect(jsonPath("$[1].city_name", is("Multan")))
+//                .andExpect(header().string("Location", "/v1/locations/UCH_PK"))
+                .andDo(print());
 		
 		
 	}
