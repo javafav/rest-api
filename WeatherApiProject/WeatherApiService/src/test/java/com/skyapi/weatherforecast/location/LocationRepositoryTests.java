@@ -18,6 +18,8 @@ import com.skyapi.weatherforecast.common.Location;
 @Rollback(false)
 public class LocationRepositoryTests {
 
+	private static final String END_URI_PATH = "/v1/locations";
+	
 	@Autowired
 	private LocationRepository repo;
 	
@@ -44,5 +46,42 @@ public class LocationRepositoryTests {
 		
 		assertThat(listLocations).isNotNull();
 		listLocations.forEach(System.out::print);
+	}
+	
+	@Test
+	public void testLocationNotFoundByCode() {
+		
+		String code = "ABCD";
+		Location location = repo.findByCode(code);
+		
+		assertThat(location).isNull();
+		
+	}
+	
+	@Test
+	public void testLocationFoundByCode() {
+		
+		String code = "UCH_PK";
+		Location location = repo.findByCode(code);
+		
+	
+		System.out.println(location);
+		
+		assertThat(location).isNotNull();
+		assertThat(location.getCode().equals(code));
+		
+	}
+	
+	@Test
+	public void testTrashedSuccess() {
+		String code = "UCH_PK";
+		
+		
+		repo.trashByCode(code);
+		Location location = repo.findByCode(code);
+		
+		assertThat(location).isNull();
+		
+		
 	}
 }
