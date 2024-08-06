@@ -77,7 +77,7 @@ public class LocationRepositoryTests {
 		String code = "UCH_PK";
 		
 		
-		repo.trashByCode(code);
+		repo.trashedByCode(code);
 		Location location = repo.findByCode(code);
 		
 		assertThat(location).isNull();
