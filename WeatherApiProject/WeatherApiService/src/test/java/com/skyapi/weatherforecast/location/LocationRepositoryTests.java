@@ -2,6 +2,7 @@ package com.skyapi.weatherforecast.location;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
 import com.skyapi.weatherforecast.common.Location;
+import com.skyapi.weatherforecast.common.RealtimeWeather;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -83,5 +85,26 @@ public class LocationRepositoryTests {
 		assertThat(location).isNull();
 		
 		
+	}
+	
+	@Test
+	public void testAddRealtimeWeather() {
+	
+		String code = "LACA_USA";
+		Location location = repo.findByCode(code);
+		
+		RealtimeWeather realtimeWeather = location.getRealtimeWeather();
+		
+		if(realtimeWeather == null ) {
+			realtimeWeather = new RealtimeWeather();
+			realtimeWeather.setLocation(location);
+			location.setRealtimeWeather(realtimeWeather);
+		}
+		
+		
+		realtimeWeather.setHumidity(30);
+		realtimeWeather.setTemperature(39);
+		realtimeWeather.setPrecipitation(36);
+		realtimeWeather.setStatus("Cloudy");
 	}
 }
