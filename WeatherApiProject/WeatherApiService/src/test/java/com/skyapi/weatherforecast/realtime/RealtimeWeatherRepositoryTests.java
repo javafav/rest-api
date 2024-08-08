@@ -37,4 +37,28 @@ public class RealtimeWeatherRepositoryTests {
 		assertThat(updatedWeather.getStatus().equals("Snowy"));
 		
 	}
+	
+	@Test
+	public void testFindByCityNameAndCountryCodeNotFound() {
+		
+		String cityName = "Dubai";
+		String CountryCode = "UAE";
+		
+		RealtimeWeather realtimeWeather = repo.findByCityAndCountryCode(cityName, CountryCode);
+		
+		assertThat(realtimeWeather).isNull();
+	}
+	
+	@Test
+	public void testFindByCityNameAndCountryCodeFound() {
+		
+		String cityName = "Los Angeles";
+		String CountryCode = "USA";
+		
+		RealtimeWeather realtimeWeather = repo.findByCityAndCountryCode(cityName, CountryCode);
+		
+		assertThat(realtimeWeather).isNotNull();
+		
+		//assertThat(realtimeWeather.getLocation().getCityName()).isEqualTo("Uch Sharif");
+	}
 }

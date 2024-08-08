@@ -60,7 +60,7 @@ public class LocationApiControllerTests {
 		location.setCode("UCH_PK");
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		Mockito.when(service.add(location)).thenReturn(location);
@@ -93,7 +93,7 @@ public class LocationApiControllerTests {
 		location.setCode("");
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		
@@ -113,7 +113,7 @@ public class LocationApiControllerTests {
 		location.setCode("");
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		
@@ -155,7 +155,7 @@ public class LocationApiControllerTests {
 		location1.setCode("UCH_PK");
 		location1.setCityName("Uch Sharif");
 		location1.setRegionName("Bahwalpur");
-		location1.setCounrtyCode("PK");
+		location1.setCountryCode("PK");
 		location1.setCountryName("Pakistan");
 		
 		
@@ -163,7 +163,7 @@ public class LocationApiControllerTests {
 		location2.setCode("MUX_PK");
 		location2.setCityName("Multan");
 		location2.setRegionName("multan");
-		location2.setCounrtyCode("PK");
+		location2.setCountryCode("PK");
 		location2.setCountryName("Pakistan");
 		
 		Mockito.when(service.list()).thenReturn(List.of(location1, location2));
@@ -210,7 +210,7 @@ public class LocationApiControllerTests {
 		location.setCode("UCH_PK");
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		Mockito.when(service.get(code)).thenReturn(location);
@@ -235,7 +235,7 @@ public class LocationApiControllerTests {
 		location.setCode("ABCDE");
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		String bodyContent = mapper.writeValueAsString(location);
@@ -256,7 +256,7 @@ public class LocationApiControllerTests {
 		
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		String bodyContent = mapper.writeValueAsString(location);
@@ -276,7 +276,7 @@ public class LocationApiControllerTests {
 		location.setCode("UCH_PK");
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		String bodyContent = mapper.writeValueAsString(location);

@@ -42,7 +42,7 @@ public class LocationService {
 		locationInDb.setCityName(locationInRequest.getCityName());
 		locationInDb.setRegionName(locationInRequest.getRegionName());
 		locationInDb.setCountryName(locationInRequest.getCountryName());
-		locationInDb.setCounrtyCode(locationInRequest.getCounrtyCode());
+		locationInDb.setCountryCode(locationInRequest.getCountryCode());
 		locationInDb.setEnabled(locationInRequest.isEnabled());
 		
 		Location updatedLocation = repo.save(locationInDb);

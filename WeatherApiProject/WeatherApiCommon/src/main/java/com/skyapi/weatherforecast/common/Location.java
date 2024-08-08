@@ -47,23 +47,24 @@ public class Location {
 	@Column(length = 3, nullable = false)
 	@JsonProperty("country_code")
 	@NotNull(message = "Country code cannot be null")
-	private String counrtyCode;
+	private String countryCode;
 
 	private boolean enabled;
 	
 	@OneToOne(mappedBy = "location" , cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
+	@JsonIgnore
 	private RealtimeWeather realtimeWeather;
 	
 	
 	public Location() {}
 	
-	public Location( String cityName, String regionName, String countryName,String counrtyCode) {
+	public Location( String cityName, String regionName, String countryName,String countryCode) {
 		
 		this.cityName = cityName;
 		this.regionName = regionName;
 		this.countryName = countryName;
-		this.counrtyCode = counrtyCode;
+		this.countryCode = countryCode;
 	}
 
 	@JsonIgnore
@@ -74,6 +75,7 @@ public class Location {
 	}
 
 	public void setCode(String code) {
+	
 		this.code = code;
 	}
 
@@ -100,13 +102,14 @@ public class Location {
 	public void setCountryName(String countryName) {
 		this.countryName = countryName;
 	}
+  
 
-	public String getCounrtyCode() {
-		return counrtyCode;
+	public String getCountryCode() {
+		return countryCode;
 	}
 
-	public void setCounrtyCode(String counrtyCode) {
-		this.counrtyCode = counrtyCode;
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
 	}
 
 	public boolean isEnabled() {
@@ -145,7 +148,7 @@ public class Location {
 	@Override
 	public String toString() {
 		return "Location [code=" + code + ", cityName=" + cityName + ", regionName=" + regionName + ", countryName="
-				+ countryName + ", counrtyCode=" + counrtyCode + ", enabled=" + enabled + ", trashed=" + trashed + "]";
+				+ countryName + ", counrtyCode=" + countryCode + ", enabled=" + enabled + ", trashed=" + trashed + "]";
 	}
 
 	public RealtimeWeather getRealtimeWeather() {

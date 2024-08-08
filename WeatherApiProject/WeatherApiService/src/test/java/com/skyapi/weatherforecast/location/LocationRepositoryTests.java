@@ -33,7 +33,7 @@ public class LocationRepositoryTests {
 		location.setCode("UCH");
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
-		location.setCounrtyCode("PK");
+		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
 		Location savedLoaction = repo.save(location);
