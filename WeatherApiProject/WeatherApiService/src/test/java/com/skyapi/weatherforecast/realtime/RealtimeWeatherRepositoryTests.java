@@ -61,4 +61,35 @@ public class RealtimeWeatherRepositoryTests {
 		
 		//assertThat(realtimeWeather.getLocation().getCityName()).isEqualTo("Uch Sharif");
 	}
+	
+	@Test
+	public void testFindByLocationNotFound() {
+		String code = "ABC_TEST";
+		RealtimeWeather realtimeWeather = repo.findByLocationCode(code);
+		
+		assertThat(realtimeWeather).isNull();
+		
+	}
+	
+	@Test
+	public void testFindByTrashedLocationNotFound() {
+		String code = "UCH_PK";
+		RealtimeWeather realtimeWeather = repo.findByLocationCode(code);
+		
+		assertThat(realtimeWeather).isNull();
+		
+	}
+	
+	@Test
+	public void testFindByLocationFound() {
+		String code = "UCH_PK";
+		RealtimeWeather realtimeWeather = repo.findByLocationCode(code);
+		
+		assertThat(realtimeWeather).isNotNull();
+		assertThat(realtimeWeather.getLocation().getCode()).isEqualTo("UCH_PK");
+		assertThat(realtimeWeather.getLocation().getCityName()).isEqualTo("Hasilpur");
+		
+		System.out.println(realtimeWeather);
+		
+	}
 }

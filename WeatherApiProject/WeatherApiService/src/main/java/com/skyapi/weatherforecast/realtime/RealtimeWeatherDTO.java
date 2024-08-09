@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -26,6 +27,7 @@ public class RealtimeWeatherDTO {
 	private int windSpeed;
 
 	@JsonProperty("last_updated")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
 	private Date lastUpdated;
 
 	public String getLocation() {
@@ -83,5 +85,7 @@ public class RealtimeWeatherDTO {
 	public void setLastUpdated(Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
+	
+	
 
 }

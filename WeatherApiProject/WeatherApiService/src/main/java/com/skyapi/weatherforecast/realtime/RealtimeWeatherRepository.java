@@ -9,4 +9,7 @@ public interface RealtimeWeatherRepository extends CrudRepository<RealtimeWeathe
 
 	@Query("SELECT r FROM RealtimeWeather r WHERE r.location.cityName = ?1 AND r.location.countryCode = ?2")
 	public RealtimeWeather findByCityAndCountryCode(String cityName, String countryCode );
+	
+	@Query("SELECT r FROM RealtimeWeather r WHERE r.location.trashed = false AND r.locationCode =?1")
+	public RealtimeWeather findByLocationCode(String code);
 }
