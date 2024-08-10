@@ -54,8 +54,17 @@ public class RealtimeWeatherService {
 			throw new LocationNotFoundException("Could not find weather information for given code " + locationCode);
 		}
 		
+		
 		realtimeWeatherInRequest.setLocation(location);
 		realtimeWeatherInRequest.setLastUpdated(new Date());
+		
+		if(location.getRealtimeWeather() == null) {
+			location.setRealtimeWeather(realtimeWeatherInRequest);
+			Location updatedLocation = locationRepo.save(location);
+			return updatedLocation.getRealtimeWeather();
+		}
+		
+	
 		
 		return realtimeWeatherRepo.save(realtimeWeatherInRequest);
 		

@@ -1,5 +1,7 @@
 package com.skyapi.weatherforecast.common;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.validator.constraints.Length;
@@ -11,6 +13,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -56,6 +59,8 @@ public class Location {
 	@JsonIgnore
 	private RealtimeWeather realtimeWeather;
 	
+	@OneToMany(mappedBy = "hourlyWeatherId.location", cascade = CascadeType.ALL)
+	private List<HourlyWeather> listHourlyWeathers =  new ArrayList<>();
 	
 	public Location() {}
 	
@@ -147,7 +152,7 @@ public class Location {
 
 	@Override
 	public String toString() {
-		return cityName + ", " +  (regionName != null ? regionName : "" ) + ", "  + countryName;
+		return cityName + ", " +  (regionName != null ? regionName + ", " : "" ) +    countryName;
 	}
 
 	public RealtimeWeather getRealtimeWeather() {
@@ -156,6 +161,19 @@ public class Location {
 
 	public void setRealtimeWeather(RealtimeWeather realtimeWeather) {
 		this.realtimeWeather = realtimeWeather;
+	}
+
+	public List<HourlyWeather> getListHourlyWeathers() {
+		return listHourlyWeathers;
+	}
+
+	public void setListHourlyWeathers(List<HourlyWeather> listHourlyWeathers) {
+		this.listHourlyWeathers = listHourlyWeathers;
+	}
+	
+	public Location code(String code) {
+		setCode(code);
+		return this;
 	}
 	
 	

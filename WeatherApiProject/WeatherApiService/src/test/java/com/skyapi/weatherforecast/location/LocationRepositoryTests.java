@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
+import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
 import com.skyapi.weatherforecast.common.RealtimeWeather;
 
@@ -106,5 +107,34 @@ public class LocationRepositoryTests {
 		realtimeWeather.setTemperature(39);
 		realtimeWeather.setPrecipitation(36);
 		realtimeWeather.setStatus("Cloudy");
+	}
+	
+	
+
+	@Test
+	public void testAddHourlyWeather2Location() {
+		String code = "UCH_PK";
+		Location location = repo.findByCode(code);
+		
+		List<HourlyWeather> listHourlyWeathers = location.getListHourlyWeathers();
+		HourlyWeather forecast1 = new HourlyWeather().id(8, location)
+				                                 .precipitation(50)
+				                                 .temperature(32)
+				                                 .status("Sunny");
+		
+		HourlyWeather forecast2 = new HourlyWeather().id(9, location)
+                .precipitation(48)
+                .temperature(30)
+                .status("Sunny");
+		
+		listHourlyWeathers.add(forecast1);
+		listHourlyWeathers.add(forecast2);
+		Location updatedLocation = repo.save(location);
+		
+		assertThat(updatedLocation.getListHourlyWeathers()).isNotEmpty();		
+		
+               
+				                                
+		
 	}
 }
