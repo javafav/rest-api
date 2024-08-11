@@ -3,6 +3,7 @@ package com.skyapi.weatherforecast.common;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
@@ -10,7 +11,7 @@ import jakarta.persistence.Table;
 public class HourlyWeather {
 	
 	@EmbeddedId
-	private HourlyWeatherId hourlyWeatherId = new HourlyWeatherId();
+	private HourlyWeatherId id = new HourlyWeatherId();
 	
 	private int temperature;
 	private int precipitation;
@@ -18,12 +19,14 @@ public class HourlyWeather {
 	@Column(length = 50)
 	private String status;
 
-	public HourlyWeatherId getHourlyWeatherId() {
-		return hourlyWeatherId;
+
+
+	public HourlyWeatherId getId() {
+		return id;
 	}
 
-	public void setHourlyWeatherId(HourlyWeatherId hourlyWeatherId) {
-		this.hourlyWeatherId = hourlyWeatherId;
+	public void setId(HourlyWeatherId id) {
+		this.id = id;
 	}
 
 	public int getTemperature() {
@@ -67,19 +70,19 @@ public class HourlyWeather {
 	}
 	
 	public HourlyWeather hourOfDay(int hourOfDay) {
-		this.hourlyWeatherId.setHourOfDay(hourOfDay);
+		this.id.setHourOfDay(hourOfDay);
 		
 		return this;
 	}
 
 	public HourlyWeather location(Location location) {
-		this.hourlyWeatherId.setLocation(location);
+		this.id.setLocation(location);
 		return this;
 	}
 	
 	public HourlyWeather id(int hourOfDay, Location location) {
-		this.hourlyWeatherId.setHourOfDay(hourOfDay);
-		this.hourlyWeatherId.setLocation(location);
+		this.id.setHourOfDay(hourOfDay);
+		this.id.setLocation(location);
 		return this;
 	}
 }

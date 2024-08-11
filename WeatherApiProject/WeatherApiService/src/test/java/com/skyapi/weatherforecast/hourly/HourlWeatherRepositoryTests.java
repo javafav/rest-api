@@ -54,13 +54,37 @@ public class HourlWeatherRepositoryTests {
 
 		Location location = new Location().code("LACA_USA");
 
-		HourlyWeatherId hourlyWeatherId = new HourlyWeatherId(9, location);
+		HourlyWeatherId hourlyWeatherId = new HourlyWeatherId(10, location);
 
 		repo.deleteById(hourlyWeatherId);
 
 		Optional<HourlyWeather> findById = repo.findById(hourlyWeatherId);
 
-		assertThat(findById).isNull();
+		assertThat(findById).isEmpty();
 
+	}
+	
+	@Test
+	public void testFindByLocationCodeFound() {
+		String locationCode = "UCH_PK";
+		int currenrHour = 7;
+		
+		List<HourlyWeather> hourlyWeatherList = repo.findByLocationCode(locationCode, currenrHour);
+		
+		assertThat(hourlyWeatherList).isNotEmpty();
+		
+		hourlyWeatherList.forEach(hour -> System.out.println(hour));
+	}
+	
+	@Test
+	public void testFindByLocationCodeNotFound() {
+		String locationCode = "UCH_PK";
+		int currenrHour = 10;
+		
+		List<HourlyWeather> hourlyWeatherList = repo.findByLocationCode(locationCode, currenrHour);
+		
+		assertThat(hourlyWeatherList).isEmpty();
+		
+		hourlyWeatherList.forEach(hour -> System.out.println(hour));
 	}
 }
