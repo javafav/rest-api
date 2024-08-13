@@ -29,12 +29,12 @@ public class HourlyWeatherService {
 		String cityName = location.getCityName();
 
 		Location locationInDB = locationRepo.findByCountryCodeAndCityName(countryCode, cityName);
-
+    
 		if (locationInDB == null) {
 
 			throw new LocationNotFoundException("No location found with given country code and city name");
 		}
-
+         
 		  return hourlyWeatherRepo.findByLocationCode(locationInDB.getCode(), currentHour);
 	}
 }

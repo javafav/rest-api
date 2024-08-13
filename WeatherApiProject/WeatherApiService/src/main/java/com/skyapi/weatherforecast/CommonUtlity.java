@@ -10,7 +10,7 @@ public class CommonUtlity {
 	public static final Logger LOGGER = LoggerFactory.getLogger(CommonUtlity.class);
 	
 	public static String getIPAddress(HttpServletRequest request) {
-		String ipAddress = request.getHeader("X-Forwarded-For");
+		String ipAddress = request.getHeader("X-FORWARDED-FOR");
 		
 		if(ipAddress == null || ipAddress.isEmpty()) {
 			ipAddress = request.getRemoteAddr();
