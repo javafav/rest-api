@@ -31,9 +31,11 @@ public class GeolocationService {
 
 		try {
 			IPResult result = ip2Location.IPQuery(ipAddress);
-			if (!"OK".equals(result.getStatus())) {
+		  
+		    if (!"OK".equals(result.getStatus())) {
 				throw new GeoLocationException("Geoloaction failed with status " + result.getStatus());
 			}
+	
 			return new Location(result.getCity(), result.getRegion(), result.getCountryLong(),
 					result.getCountryShort());
 

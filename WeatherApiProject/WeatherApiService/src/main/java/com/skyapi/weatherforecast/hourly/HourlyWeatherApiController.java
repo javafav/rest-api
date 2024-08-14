@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,20 +48,17 @@ public class HourlyWeatherApiController {
 	public ResponseEntity<?> listHourlyWeatherByIPAddress(HttpServletRequest request) {
 
 		String ipAddress = CommonUtlity.getIPAddress(request);
-		
+
 		try {
-			
+
 			int currentHour = Integer.parseInt(request.getHeader("X-Current-Hour"));
-             
+
 			Location ipLocation = locationService.getLocation(ipAddress);
-			
-			String countryCode = ipLocation.getCountryCode();
-			String cityName = ipLocation.getCityName();
-		    System.out.println("Country Code Test: " + countryCode +  "City Name Test:"+ cityName );
+
 
 			List<HourlyWeather> listHourlyWeather = hourlyWeatherService.getByLocation(ipLocation, currentHour);
-           
-			if (listHourlyWeather.isEmpty() ) {
+
+			if (listHourlyWeather.isEmpty()) {
 				return ResponseEntity.noContent().build();
 			}
 			return ResponseEntity.ok(listEntity2DTO(listHourlyWeather));
@@ -67,7 +67,7 @@ public class HourlyWeatherApiController {
 			LOGGER.error(ex.getMessage(), ex);
 
 			return ResponseEntity.badRequest().build();
-	
+
 		} catch (LocationNotFoundException ex) {
 			LOGGER.error(ex.getMessage(), ex);
 
@@ -76,6 +76,55 @@ public class HourlyWeatherApiController {
 
 	}
 	
+	@GetMapping("/{locationCode}")
+	public ResponseEntity<?> listHourlyWeatherForecastByLocationCode(HttpServletRequest request,
+			@PathVariable("locationCode") String locationCode) {
+
+		try {
+
+			int currentHour = Integer.parseInt(request.getHeader("X-Current-Hour"));
+
+			List<HourlyWeather> hurlyForecast = hourlyWeatherService.getByLocationCode(locationCode, currentHour);
+
+			if (hurlyForecast.isEmpty()) {
+				return ResponseEntity.noContent().build();
+			}
+
+			return ResponseEntity.ok(listEntity2DTO(hurlyForecast));
+
+		} catch (NumberFormatException ex) {
+			LOGGER.error(ex.getMessage(), ex);
+
+			return ResponseEntity.badRequest().build();
+
+		} catch (LocationNotFoundException ex) {
+			LOGGER.error(ex.getMessage(), ex);
+
+			return ResponseEntity.notFound().build();
+		}
+
+	}
+	
+	@PutMapping("/{locationCode}")
+	public ResponseEntity<?> updateHourlyWeatherForecastByLocationCode(@PathVariable("locationCode") String locationCode,
+		@RequestBody List<HourlyWeatherDTO> listDTO) throws BadRequestException {
+		if(listDTO.isEmpty()) {
+			throw new BadRequestException("Hourly forecast data cannot be empty");
+		}
+		
+		
+		return ResponseEntity.accepted().build();
+	}
+	
+	private List<HourlyWeather> istDTO2EntityList(List<HourlyWeatherDTO> listDTO) {
+		 List<HourlyWeather> listForecast = new ArrayList<>();
+		 
+		 listDTO.forEach(dto -> {
+			 HourlyWeather hourlyWeather = modelMapper.map(dto, HourlyWeather.class);
+			 listForecast.add(hourlyWeather);
+		 });
+		 return listForecast;
+	}
 	
 	private HourlyWeatherListDTO listEntity2DTO(List<HourlyWeather> hourlyFoecast){
         Location location = hourlyFoecast.get(0).getId().getLocation();

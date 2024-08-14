@@ -21,13 +21,41 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.skyapi.weatherforecast.hourly.BadRequestException;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 
     @Autowired private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandling.class);
-	@ExceptionHandler(Exception.class)
+	
+    
+    
+    
+    @ExceptionHandler(BadRequestException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorDTO handleGenricException(HttpServletRequest request, BadRequestException ex) {
+	
+		ErrorDTO error = new ErrorDTO();
+		
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.addErrors(ex.getMessage());
+		error.setPath(request.getServletPath());
+		
+		LOGGER.error(ex.getMessage(), ex);
+		
+		return error;
+		
+		
+	}
+    
+    
+    
+    
+    @ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorDTO handleGenricException(HttpServletRequest request, Exception ex) {
