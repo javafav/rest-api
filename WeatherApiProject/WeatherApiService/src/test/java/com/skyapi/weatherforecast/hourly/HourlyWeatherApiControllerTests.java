@@ -221,5 +221,73 @@ public class HourlyWeatherApiControllerTests {
 		.andDo(print());
 	}
 	
+	@Test
+	public void testUpdateShouldReturn404NotFound() throws Exception {
+		
+		String locationCode = "DELHI_IN";
+		String requestURI = END_URI_PATH + "/" + locationCode;
+		
+		HourlyWeatherDTO dto1 = new HourlyWeatherDTO()
+				.hourOfDay(100)
+				.temperature(10)
+				.precipitation(70)
+				.status("Cloudy");		
+		
+		
+		 List<HourlyWeatherDTO> listDTO = List.of(dto1);
+		when(hourlyWeatherService.updateByLocationCode(Mockito.eq(locationCode), Mockito.anyList())).thenThrow(LocationNotFoundException.class);
+		 
+		 
+		 
+		 String bodyContent = objectMapper.writeValueAsString(listDTO);
+		
+		mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON).content(bodyContent))                       
+		.andExpect(status().isNotFound())
+		.andDo(print());
+	}
+	
+	@Test
+	public void testUpdateShouldReturn200OOK() throws Exception {
+		
+		String locationCode = "DELHI_IN";
+		String requestURI = END_URI_PATH + "/" + locationCode;
+		
+		HourlyWeatherDTO dto1 = new HourlyWeatherDTO()
+				.hourOfDay(100)
+				.temperature(10)
+				.precipitation(70)
+				.status("Cloudy");	
+		
+		Location location = new Location();
+		location.setCode(locationCode);
+		location.setCityName("New York City");
+		location.setRegionName("New York");
+		location.setCountryCode("US");
+		location.setCountryName("United States of America");
+		
+		HourlyWeather forecast1 = new HourlyWeather()
+				.location(location)
+				.hourOfDay(10)
+				.temperature(13)
+				.precipitation(70)
+				.status("Cloudy");	
+		
+		
+		 List<HourlyWeatherDTO> listDTO = List.of(dto1);
+		 List<HourlyWeather> hourlyForecast = List.of(forecast1);
+		 
+		 when(hourlyWeatherService.updateByLocationCode(Mockito.eq(locationCode), Mockito.anyList())).thenReturn(hourlyForecast);
+		 
+		 
+		 
+		 String bodyContent = objectMapper.writeValueAsString(listDTO);
+		
+		mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON).content(bodyContent))                       
+		.andExpect(status().isOk())
+	    .andExpect(jsonPath("$.location", is(location.toString()))) 
+	    .andExpect(jsonPath("$.hourly_forecast[0].hour_of_day", is(10))) 
+		.andDo(print());
+	}
+	
 	
 }

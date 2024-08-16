@@ -52,7 +52,15 @@ public class HourlyWeatherService {
 
 	}
 	
-	public List<HourlyWeather> updateByLocationCode(String locationCode, List<HourlyWeather> hourlyWeathers){
-		return Collections.emptyList();
+	public List<HourlyWeather> updateByLocationCode(String locationCode, List<HourlyWeather> hourlyWeathers) throws LocationNotFoundException{
+		Location locationInDB = locationRepo.findByCode(locationCode);
+
+		if (locationInDB == null) {
+
+			throw new LocationNotFoundException("No location found with given  location Code " + locationCode);
+		}
+		System.out.println("Location Code: " + locationCode);
+		
+		return (List<HourlyWeather>) hourlyWeatherRepo.saveAll(hourlyWeathers);
 	}
 }

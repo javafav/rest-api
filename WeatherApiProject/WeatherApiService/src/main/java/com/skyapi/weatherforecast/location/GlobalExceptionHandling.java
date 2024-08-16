@@ -2,6 +2,7 @@ package com.skyapi.weatherforecast.location;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.skyapi.weatherforecast.hourly.BadRequestException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
@@ -32,11 +35,15 @@ public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 	
     
     
+
+    
+    
+    
     
     @ExceptionHandler(BadRequestException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorDTO handleGenricException(HttpServletRequest request, BadRequestException ex) {
+	public ErrorDTO  handleBadRequestException(HttpServletRequest request, BadRequestException ex) {
 	
 		ErrorDTO error = new ErrorDTO();
 		
@@ -53,6 +60,35 @@ public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 	}
     
     
+    @ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorDTO  handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException ex) {
+    //	ConstraintViolationException ex =  (ConstraintViolationException) e;
+		ErrorDTO error = new ErrorDTO();
+		var constraintViolations = ex.getConstraintViolations();
+		
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.setPath(request.getServletPath());
+		
+		
+		constraintViolations.forEach(constraint -> {
+			error.addErrors(constraint.getPropertyPath() + ": " + constraint.getMessage());
+		} );
+		
+	
+		
+		LOGGER.error(ex.getMessage(), ex);
+		
+		return error;
+		
+		
+	}
+    
+    
+    
+
     
     
     @ExceptionHandler(Exception.class)
@@ -73,6 +109,10 @@ public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 		
 		
 	}
+    
+
+      
+    
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
