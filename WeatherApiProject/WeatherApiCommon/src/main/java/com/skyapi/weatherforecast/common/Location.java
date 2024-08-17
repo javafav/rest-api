@@ -26,30 +26,19 @@ public class Location {
 
 	@Id
 	@Column(length = 12, nullable = false, unique = true)
-	@NotNull(message = "Location code cannot be null")
-	@Length(min = 3, max = 12, message = "Location code must have 3-12 charcter")
 	private String code;
 
 	@Column(length = 128, nullable = false)
-	@JsonProperty("city_name")
-	@NotNull(message = "City name cannot be null")
-	@Length(min = 3, max = 12, message = "City name must have 3-128 charcter")
 	private String cityName;
 
 	@Column(length = 64)
-	@JsonProperty("region_name")
-	@Length(min = 3, max = 12, message = "Region name must have 3-64 charcter")
 	private String regionName;
-
+ 
+	
 	@Column(length = 64, nullable = false)
-	@JsonProperty("country_name")
-	@NotNull(message = "Country name cannot be null")
-	@Length(min = 3, max = 12, message = "Country name must have 3-64 charcter")
-	private String countryName;
+    private String countryName;
 
-	@Column(length = 3, nullable = false)
-	@JsonProperty("country_code")
-	@NotNull(message = "Country code cannot be null")
+	@Column(length = 2, nullable = false)
 	private String countryCode;
 
 	private boolean enabled;
@@ -59,7 +48,7 @@ public class Location {
 	@JsonIgnore
 	private RealtimeWeather realtimeWeather;
 	
-	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<HourlyWeather> listHourlyWeathers =  new ArrayList<>();
 	
 	public Location() {}

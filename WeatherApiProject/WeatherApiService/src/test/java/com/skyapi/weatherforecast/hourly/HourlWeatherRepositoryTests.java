@@ -1,7 +1,8 @@
 package com.skyapi.weatherforecast.hourly;
 
+
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.Arrays;
 import java.util.List;

@@ -44,9 +44,9 @@ public class LocationApiControllerTests {
 	public void testAddLocationShouldReturn400BadRequest() throws Exception {
 		
 		
-		Location location =  new Location();
+		LocationDTO dto =  new LocationDTO();
 		
-		String bodyContent = mapper.writeValueAsString(location);
+		String bodyContent = mapper.writeValueAsString(dto);
 		mockMvc.perform(post(END_URI_PATH).contentType("application/json")
 				                          .content(bodyContent)).andExpect(status()
 				                        		  .isBadRequest()).andDo(print());
@@ -63,9 +63,18 @@ public class LocationApiControllerTests {
 		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
+		LocationDTO dto = new LocationDTO();
+		dto.setCode(location.getCode());
+		dto.setCityName(location.getCityName());
+		dto.setRegionName(location.getRegionName());
+		dto.setCountryCode(location.getCountryCode());
+		dto.setCountryName(location.getCountryName());
+		dto.setEnabled(location.isEnabled());
+		
 		Mockito.when(service.add(location)).thenReturn(location);
 		
-		String bodyContent = mapper.writeValueAsString(location);
+		String bodyContent = mapper.writeValueAsString(dto);
+		
 		mockMvc.perform(post(END_URI_PATH).contentType("application/json")
 				                          .content(bodyContent))
 		                                  .andExpect(status() .isCreated())
@@ -90,14 +99,23 @@ public class LocationApiControllerTests {
 	@Test
 	public void testValidateRequestBodyLocationCode() throws Exception {
 		Location location = new Location();
-		location.setCode("");
+		
 		location.setCityName("Uch Sharif");
 		location.setRegionName("Bahwalpur");
 		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
+		LocationDTO dto = new LocationDTO();
+		dto.setCode(location.getCode());
+		dto.setCityName(location.getCityName());
+		dto.setRegionName(location.getRegionName());
+		dto.setCountryCode(location.getCountryCode());
+		dto.setCountryName(location.getCountryName());
+		dto.setEnabled(location.isEnabled());
 		
-		String bodyContent = mapper.writeValueAsString(location);
+		
+		
+		String bodyContent = mapper.writeValueAsString(dto);
 		mockMvc.perform(post(END_URI_PATH).contentType("application/json")
 				                          .content(bodyContent))
 		                                  .andExpect(status() .isBadRequest())
@@ -116,8 +134,16 @@ public class LocationApiControllerTests {
 		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
+		LocationDTO dto = new LocationDTO();
+		dto.setCode(location.getCode());
+		dto.setCityName(location.getCityName());
+		dto.setRegionName(location.getRegionName());
+		dto.setCountryCode(location.getCountryCode());
+		dto.setCountryName(location.getCountryName());
+		dto.setEnabled(location.isEnabled());
 		
-		String bodyContent = mapper.writeValueAsString(location);
+		
+		String bodyContent = mapper.writeValueAsString(dto);
 		mockMvc.perform(post(END_URI_PATH).contentType("application/json")
 				                          .content(bodyContent))
 		                                  .andExpect(status() .isBadRequest())
@@ -129,7 +155,8 @@ public class LocationApiControllerTests {
 	
 	@Test
 	public void testValidateRequestBodyAllFiedlInvalid() throws Exception {
-		Location location = new Location();
+		LocationDTO location = new LocationDTO();
+		location.setRegionName("");
 
 		String bodyContent = mapper.writeValueAsString(location);
 
@@ -196,7 +223,7 @@ public class LocationApiControllerTests {
 		String uriPath = END_URI_PATH + "/ABCD";
 		
 		
-		mockMvc.perform(get(uriPath))
+		mockMvc.perform(delete(uriPath))
 		       .andExpect(status().isNoContent())
 		       .andDo(print());
 	}
@@ -238,9 +265,24 @@ public class LocationApiControllerTests {
 		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
-		String bodyContent = mapper.writeValueAsString(location);
+		
+		LocationDTO dto = new LocationDTO();
+		dto.setCode(location.getCode());
+		dto.setCityName(location.getCityName());
+		dto.setRegionName(location.getRegionName());
+		dto.setCountryCode(location.getCountryCode());
+		dto.setCountryName(location.getCountryName());
+		dto.setEnabled(location.isEnabled());
+	
 		
 		Mockito.when(service.update(location)).thenThrow(new LocationNotFoundException("No location found with given code" + location.getCode()));
+	//LocationNotFoundException ex = new LocationNotFoundException(location.getCityName());
+		
+		//Mockito.when(service.update(Mockito.any())).thenThrow(ex);
+		
+		String bodyContent = mapper.writeValueAsString(dto);
+		
+	
 		
 		mockMvc.perform(put(END_URI_PATH).contentType("application/json")
 				                         .content(bodyContent))
@@ -279,7 +321,15 @@ public class LocationApiControllerTests {
 		location.setCountryCode("PK");
 		location.setCountryName("Pakistan");
 		
-		String bodyContent = mapper.writeValueAsString(location);
+		LocationDTO dto = new LocationDTO();
+		dto.setCode(location.getCode());
+		dto.setCityName(location.getCityName());
+		dto.setRegionName(location.getRegionName());
+		dto.setCountryCode(location.getCountryCode());
+		dto.setCountryName(location.getCountryName());
+		dto.setEnabled(location.isEnabled());
+		
+		String bodyContent = mapper.writeValueAsString(dto);
 		
 		Mockito.when(service.update(location)).thenReturn(location);
 		

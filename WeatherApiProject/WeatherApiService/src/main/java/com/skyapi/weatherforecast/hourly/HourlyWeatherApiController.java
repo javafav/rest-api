@@ -149,7 +149,7 @@ public class HourlyWeatherApiController {
         Location location = hourlyFoecast.get(0).getId().getLocation();
         
         HourlyWeatherListDTO listDTO = new HourlyWeatherListDTO();
-         listDTO.setLocation(location.toString());
+        listDTO.setLocation(location.toString());
         
        hourlyFoecast.forEach(hourlyWeather -> {
     	   
