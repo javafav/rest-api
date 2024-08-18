@@ -59,6 +59,26 @@ public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 		
 	}
     
+    @ExceptionHandler(LocationNotFoundException.class)
+  	@ResponseStatus(HttpStatus.NOT_FOUND)
+  	@ResponseBody
+  	public ErrorDTO  handleLocationNorFoundException(HttpServletRequest request, LocationNotFoundException ex) {
+  	
+  		ErrorDTO error = new ErrorDTO();
+  		
+  		error.setTimestamp(new Date());
+  		error.setStatus(HttpStatus.NOT_FOUND.value());
+  		error.addErrors(ex.getMessage());
+  		error.setPath(request.getServletPath());
+  		
+  		LOGGER.error(ex.getMessage(), ex);
+  		
+  		return error;
+  		
+  		
+  	}
+      
+    
     
     @ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

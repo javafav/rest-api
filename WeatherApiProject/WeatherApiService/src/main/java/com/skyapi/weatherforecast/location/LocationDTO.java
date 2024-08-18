@@ -2,6 +2,8 @@ package com.skyapi.weatherforecast.location;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -21,6 +23,7 @@ public class LocationDTO {
 	
 	@JsonProperty("region_name")
 	@Length(min = 3, max = 64, message = "Region name must have 3-64 charcter")
+	@JsonInclude(value = Include.NON_NULL)
 	private String regionName;
 	
 	@JsonProperty("country_name")
@@ -52,7 +55,7 @@ public class LocationDTO {
 	}
 
 	public String getRegionName() {
-		return regionName == null ? "" : regionName;
+		return  regionName;
 	}
 
 	public void setRegionName(String regionName) {

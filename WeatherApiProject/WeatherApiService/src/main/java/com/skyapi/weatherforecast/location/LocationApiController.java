@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
 import com.skyapi.weatherforecast.hourly.HourlyWeatherApiController;
 
@@ -61,36 +60,22 @@ public class LocationApiController {
 	public ResponseEntity<?> getLocation(@PathVariable("code") String code) {
 		Location location = service.get(code);
 
-		if (location == null) {
-			return ResponseEntity.notFound().build();
-		}
 		return ResponseEntity.ok(entiy2DTO(location));
 	}
 
 	@PutMapping
 	public ResponseEntity<?> updateLocation(@RequestBody @Valid LocationDTO dto) {
-		try {
-			Location updatedLocation = service.update(dto2Entity(dto));
-			return ResponseEntity.ok(entiy2DTO(updatedLocation));
 
-		} catch (LocationNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		}
+		Location updatedLocation = service.update(dto2Entity(dto));
+		return ResponseEntity.ok(entiy2DTO(updatedLocation));
+
 	}
 
 	@DeleteMapping("/{code}")
 	public ResponseEntity<?> deleteLocation(@PathVariable("code") String code) {
 
-		try {
-
-			service.delete(code);
-			return ResponseEntity.noContent().build();
-
-		} catch (LocationNotFoundException ex) {
-
-			return ResponseEntity.notFound().build();
-
-		}
+		service.delete(code);
+		return ResponseEntity.noContent().build();
 
 	}
 

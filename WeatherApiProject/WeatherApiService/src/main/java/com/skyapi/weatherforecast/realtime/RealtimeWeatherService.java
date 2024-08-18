@@ -32,7 +32,7 @@ public class RealtimeWeatherService {
 		RealtimeWeather realtimeWeather = realtimeWeatherRepo.findByCityAndCountryCode(cityName, countryCode);
 		
 		if(realtimeWeather == null) {
-			throw new LocationNotFoundException("Could not find weather information for given city name and country code ");
+			throw new LocationNotFoundException(countryCode,cityName);
 		}
 		return realtimeWeather;
 		
@@ -48,10 +48,10 @@ public class RealtimeWeatherService {
 		return realtimeWeather;
 	}
 	
-	public RealtimeWeather update(String locationCode, RealtimeWeather realtimeWeatherInRequest) throws LocationNotFoundException {
+	public RealtimeWeather update(String locationCode, RealtimeWeather realtimeWeatherInRequest) {
 		Location location = locationRepo.findByCode(locationCode);
 		if(location == null) {
-			throw new LocationNotFoundException("Could not find weather information for given code " + locationCode);
+			throw new LocationNotFoundException( locationCode);
 		}
 		
 		
