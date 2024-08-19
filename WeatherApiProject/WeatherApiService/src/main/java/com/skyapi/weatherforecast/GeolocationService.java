@@ -1,6 +1,7 @@
 package com.skyapi.weatherforecast;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +15,16 @@ import com.skyapi.weatherforecast.common.Location;
 public class GeolocationService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationService.class);
-	private String  DBPath = "iploc2db/IP2LOCATION-LITE-DB3.BIN";
+	private String  DBPath = "/iploc2db/IP2LOCATION-LITE-DB3.BIN";
     private	IP2Location ip2Location = new IP2Location();
 	
     public GeolocationService() {
 		
 		try {
-			ip2Location.Open(DBPath);
+			InputStream inputStream = getClass().getResourceAsStream(DBPath);
+			byte[] data = inputStream.readAllBytes();
+			ip2Location.Open(data);
+			inputStream.close();
 		}catch(Exception ex) {
 			LOGGER.error(ex.getMessage(), ex);
 		}
