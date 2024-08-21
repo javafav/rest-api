@@ -174,4 +174,14 @@ public class LocationRepositoryTests {
 		assertThat(location.getCityName()).isEqualTo(cityName);
 		
 	}
+	
+	@Test
+	public void testAddDailyForecast2Location() {
+		
+		String code = "UCH_PK";
+		Location location = repo.findByCode(code);
+		
+	
+		
+	}
 }
