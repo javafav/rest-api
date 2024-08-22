@@ -48,4 +48,12 @@ public class DailyWeatherId {
 		this.location = location;
 	}
 
+
+	@Override
+	public String toString() {
+		return "DailyWeatherId [dayOfMonth=" + dayOfMonth + ", month=" + month + ", location=" + location + "]";
+	}
+	
+	
+
 }

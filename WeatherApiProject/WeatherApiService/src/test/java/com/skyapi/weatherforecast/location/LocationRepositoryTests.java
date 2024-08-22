@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
+import com.skyapi.weatherforecast.common.DailyWeather;
 import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
 import com.skyapi.weatherforecast.common.RealtimeWeather;
@@ -181,7 +182,33 @@ public class LocationRepositoryTests {
 		String code = "UCH_PK";
 		Location location = repo.findByCode(code);
 		
-	
+		List<DailyWeather> listDailyWeather = location.getListDailyWeather();
+		
+		DailyWeather forecast1 = new DailyWeather()
+				                     .precipitation(10).dayOfMonth(11)
+				                     .month(11).location(location)
+				                     .maxTemp(11).minTemp(7)
+				                     .status("Cloudy");
+		
+		
+		DailyWeather forecast2 = new DailyWeather()
+				                     .precipitation(11).dayOfMonth(10)
+				                     .month(10).location(location)
+				                     .maxTemp(21).minTemp(17)
+				                     .status("Sunny");
+		  
+		  
+		
+	  listDailyWeather.add(forecast1);
+	  listDailyWeather.add(forecast2);
+	  
+	  Location updatedLocation = repo.save(location);
+		
+		 
+		  
+		  
+		  assertThat(updatedLocation.getListDailyWeather().size()).isGreaterThan(0);
+	 
 		
 	}
 }

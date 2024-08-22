@@ -25,7 +25,7 @@ public class HourlyWeatherService {
 		this.locationRepo = locationRepo;
 	}
 
-	public List<HourlyWeather> getByLocation(Location location, int currentHour) throws LocationNotFoundException {
+	public List<HourlyWeather> getByLocation(Location location, int currentHour){
 
 		String countryCode = location.getCountryCode();
 		String cityName = location.getCityName();

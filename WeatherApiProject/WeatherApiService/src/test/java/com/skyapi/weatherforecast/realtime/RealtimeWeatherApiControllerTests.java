@@ -87,7 +87,7 @@ public class RealtimeWeatherApiControllerTests {
 		mockMvc.perform(get(END_URI_PATH))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"))
-			//	.andExpect(jsonPath("$.location", is(expectedLocation)))
+				.andExpect(jsonPath("$.location", is(expectedLocation)))
 				
 				.andDo(print());		
 	}

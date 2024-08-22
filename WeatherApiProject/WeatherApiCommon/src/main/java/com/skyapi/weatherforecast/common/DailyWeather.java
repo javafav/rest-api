@@ -8,17 +8,16 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "weather_daily")
 public class DailyWeather {
-	
+
 	@EmbeddedId
 	private DailyWeatherId id = new DailyWeatherId();
-	
+
 	private int minTemp;
 	private int maxTemp;
 	private int precipitation;
-	
+
 	@Column(length = 50)
 	private String status;
-
 
 	public DailyWeatherId getId() {
 		return id;
@@ -59,9 +58,47 @@ public class DailyWeather {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
-	
-	
 
+	public DailyWeather precipitation(int precipitation) {
+		this.setPrecipitation(precipitation);
+		return this;
+	}
+
+	public DailyWeather status(String status) {
+		setStatus(status);
+		return this;
+	}
+
+	public DailyWeather location(Location location) {
+		this.id.setLocation(location);
+		return this;
+	}
+
+	public DailyWeather minTemp(int temp) {
+		setMinTemp(temp);
+		return this;
+	}
+
+	public DailyWeather maxTemp(int temp) {
+		setMaxTemp(temp);
+		return this;
+	}
+
+	public DailyWeather month(int month) {
+		this.id.setMonth(month);
+		return this;
+	}
+
+	public DailyWeather dayOfMonth(int dayOfMonth) {
+		this.id.setDayOfMonth(dayOfMonth);
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "DailyWeather [id=" + id + ", minTemp=" + minTemp + ", maxTemp=" + maxTemp + ", precipitation="
+				+ precipitation + ", status=" + status + "]";
+	}
+	
+	
 }
