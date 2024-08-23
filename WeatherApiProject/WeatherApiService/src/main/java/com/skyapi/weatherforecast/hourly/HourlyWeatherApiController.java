@@ -48,7 +48,7 @@ public class HourlyWeatherApiController {
 
 
 	@GetMapping
-	public ResponseEntity<?> listHourlyWeatherByIPAddress(HttpServletRequest request) {
+	public ResponseEntity<?> listHourlyForecastByIPAddress(HttpServletRequest request) {
 
 		String ipAddress = CommonUtlity.getIPAddress(request);
 
@@ -100,17 +100,14 @@ public class HourlyWeatherApiController {
 
 			return ResponseEntity.badRequest().build();
 
-		} catch (LocationNotFoundException ex) {
-			LOGGER.error(ex.getMessage(), ex);
-
-			return ResponseEntity.notFound().build();
-		}
+		} 
 
 	}
 	
 	@PutMapping("/{locationCode}")
 	public ResponseEntity<?> updateHourlyWeatherForecastByLocationCode(@PathVariable("locationCode") String locationCode,
-		@RequestBody @Valid List<HourlyWeatherDTO> listDTO) throws BadRequestException {
+		@RequestBody @Valid List<HourlyWeatherDTO> listDTO)  {
+	
 		if(listDTO.isEmpty()) {
 			throw new BadRequestException("Hourly forecast data cannot be empty");
 		}

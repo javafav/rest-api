@@ -1,5 +1,7 @@
 package com.skyapi.weatherforecast.common;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -99,6 +101,31 @@ public class DailyWeather {
 		return "DailyWeather [id=" + id + ", minTemp=" + minTemp + ", maxTemp=" + maxTemp + ", precipitation="
 				+ precipitation + ", status=" + status + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DailyWeather other = (DailyWeather) obj;
+		return Objects.equals(id, other.id);
+	}
+	
+	public DailyWeather getShallowCopy() {
+		DailyWeather copy = new DailyWeather();
+		copy.setId(this.getId());
+		return copy;
+	}
+	
+	
 	
 	
 }

@@ -26,7 +26,7 @@ public class DailyWeatherRepositoryTests {
 	@Test
 	public void testAddDailyWeather() {
 		
-		Location location = new Location().code("APE_PK");
+		Location location = new Location().code("UCH_PK");
 		
 		DailyWeather forecast = new DailyWeather()
                 .precipitation(11).dayOfMonth(10)

@@ -1,5 +1,6 @@
 package com.skyapi.weatherforecast.daily;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class DailyWeatherService {
 		String countryCode = location.getCountryCode();
 		String cityName = location.getCityName();
 
-		System.out.println(location.getCode());
+	
 		Location locationInDB = locationRepo.findByCountryCodeAndCityName(countryCode, cityName);
 
 		if (locationInDB == null) {
@@ -34,5 +35,48 @@ public class DailyWeatherService {
 		}
 
 		return dailyrepo.findByLocationCode(locationInDB.getCode());
+	}
+	
+	public List<DailyWeather> getByLocationCode(String code){
+		
+		Location locationInDB = locationRepo.findByCode(code);
+
+		if (locationInDB == null) {
+			throw new LocationNotFoundException(code);
+		}
+		
+		return dailyrepo.findByLocationCode(code);
+	}
+	
+	public List<DailyWeather> updateByLocationCode(String code, List<DailyWeather> dailyWeatherInRequest ){
+		
+		Location locationInDB = locationRepo.findByCode(code);
+
+		if (locationInDB == null) {
+			throw new LocationNotFoundException(code);
+		}
+		
+		for(DailyWeather dailyWeather : dailyWeatherInRequest ) {
+			
+			dailyWeather.getId().setLocation(locationInDB);
+		}
+		
+		
+		List<DailyWeather> dailyWeatherInDb = locationInDB.getListDailyWeather();
+		
+		List<DailyWeather> dailyWeatherToBeRemoved = new ArrayList<>(); 
+		
+		for(DailyWeather dailyWeather : dailyWeatherInDb ) {
+		
+			if(!dailyWeatherInRequest.contains(dailyWeather)) {
+				dailyWeatherToBeRemoved.add(dailyWeather.getShallowCopy());
+			}
+		}
+		
+		for(DailyWeather forecast :  dailyWeatherToBeRemoved) {
+			dailyWeatherInDb.remove(forecast);
+		}
+	
+		return (List<DailyWeather>) dailyrepo.saveAll(dailyWeatherInRequest);
 	}
 }

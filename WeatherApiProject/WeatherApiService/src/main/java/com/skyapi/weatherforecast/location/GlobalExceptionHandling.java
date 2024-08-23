@@ -22,6 +22,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.skyapi.weatherforecast.GeoLocationException;
 import com.skyapi.weatherforecast.hourly.BadRequestException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +45,25 @@ public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorDTO  handleBadRequestException(HttpServletRequest request, BadRequestException ex) {
+	
+		ErrorDTO error = new ErrorDTO();
+		
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.addErrors(ex.getMessage());
+		error.setPath(request.getServletPath());
+		
+		LOGGER.error(ex.getMessage(), ex);
+		
+		return error;
+		
+		
+	}
+    
+    @ExceptionHandler(GeoLocationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorDTO  handleBadRequestException(HttpServletRequest request, GeoLocationException ex) {
 	
 		ErrorDTO error = new ErrorDTO();
 		

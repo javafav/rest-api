@@ -109,6 +109,8 @@ public class HourlyWeather {
 		HourlyWeather other = (HourlyWeather) obj;
 		return Objects.equals(id, other.id);
 	}
+	
+	
 	public HourlyWeather getShallowCopy() {
 		HourlyWeather copy = new HourlyWeather();
 		copy.setId(this.getId());

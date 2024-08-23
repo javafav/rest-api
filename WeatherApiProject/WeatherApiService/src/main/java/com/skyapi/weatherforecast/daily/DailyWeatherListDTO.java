@@ -28,7 +28,7 @@ public class DailyWeatherListDTO {
 		this.dailyForecast = dailyForecast;
 	}
 	
-	public void addDailyWeather(DailyWeatherDTO dto) {
+	public void addDailyWeatherDTO(DailyWeatherDTO dto) {
 		this.dailyForecast.add(dto);
 	}
 	
