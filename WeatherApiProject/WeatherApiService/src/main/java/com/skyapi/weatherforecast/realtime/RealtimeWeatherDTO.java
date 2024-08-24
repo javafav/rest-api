@@ -3,31 +3,41 @@ package com.skyapi.weatherforecast.realtime;
 import java.util.Date;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 public class RealtimeWeatherDTO {
 
+	
 	private String location;
+
+	@Range(min = -50,max = 50, message = "Temperature must be in the range of -50 to 50 Celsius degree")
 	private int temperature;
+	
+	@Range(min = 0, max = 100, message = "Humidity must be in the range of 0 to 100 percentage")
 	private int humidity;
+	
+	@Range(min = 0, max = 100, message = "Precipitation must be in the range of 0 to 100 percentage")
 	private int precipitation;
+	
+	
+	@Length(min = 3, max = 50, message = "Status must be in the 3 to 50 chracters")
+	@NotBlank(message = "Status must be not empty")
 	private String status;
 
 	@JsonProperty("wind_speed")
+	@Range(min = 0, max = 200, message = "Wind speed  must be in the range of 0 to 200 km/h")
 	private int windSpeed;
 
+	
 	@JsonProperty("last_updated")
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+	@JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
 	private Date lastUpdated;
 
 	public String getLocation() {

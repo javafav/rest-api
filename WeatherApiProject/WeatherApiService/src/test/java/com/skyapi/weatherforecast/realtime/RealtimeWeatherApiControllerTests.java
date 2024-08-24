@@ -162,38 +162,33 @@ public class RealtimeWeatherApiControllerTests {
 	}
 	
 	@Test
-	public void testUpdateShouldReturn40NotFound() throws Exception {
-		String locationCode ="SFCA_USA";
-		String uriPath = END_URI_PATH + "/"  + locationCode;
-	
+	public void testUpdateShouldReturn404NotFound() throws Exception {
+		String locationCode = "ABC_US";
+		String requestURI = END_URI_PATH + "/" + locationCode;
 		
-		RealtimeWeather realtimeWeather = new RealtimeWeather();
-		realtimeWeather.setTemperature(12);
-		realtimeWeather.setHumidity(32);
-		realtimeWeather.setLastUpdated(new Date());
-		realtimeWeather.setPrecipitation(88);
-		realtimeWeather.setStatus("Cloudy");
-		realtimeWeather.setWindSpeed(5);
+		RealtimeWeatherDTO dto = new RealtimeWeatherDTO();
+		dto.setTemperature(12);
+		dto.setHumidity(32);
+		dto.setPrecipitation(88);
+		dto.setStatus("Cloudy");
+		dto.setWindSpeed(5);
 		
+		LocationNotFoundException ex = new LocationNotFoundException(locationCode);
+		Mockito.when(realtimeWeatherService.update(Mockito.eq(locationCode), Mockito.any())).thenThrow(ex);
 		
-		Mockito.when(realtimeWeatherService.update(locationCode, realtimeWeather)).thenThrow(LocationNotFoundException.class);
+		String bodyContent = mapper.writeValueAsString(dto);
 		
-		
-		
-		String bodyContent = mapper.writeValueAsString(realtimeWeather);
-		System.out.println(realtimeWeather);
-		mockMvc.perform(put(uriPath).contentType("application/json").content(bodyContent)).andExpect(status().isNotFound()).andDo(print());
-		//System.out.println(" Details :"+realtimeWeather);
-		
-		
-	}
+		mockMvc.perform(put(requestURI).contentType("application/json").content(bodyContent))
+			.andExpect(status().isNotFound())
+			.andExpect(jsonPath("$.errors[0]", is(ex.getMessage())))
+			.andDo(print());		
+	}	
 	
 	
 	@Test
 	public void testUpdateShouldReturn200OK() throws Exception {
-		String locationCode ="SFCA_USA";
-		String uriPath = END_URI_PATH + "/"  + locationCode;
-	
+		String locationCode = "APE_PK";
+		String requestURI = END_URI_PATH + "/" + locationCode;
 		
 		RealtimeWeather realtimeWeather = new RealtimeWeather();
 		realtimeWeather.setTemperature(12);
@@ -203,27 +198,32 @@ public class RealtimeWeatherApiControllerTests {
 		realtimeWeather.setWindSpeed(5);
 		realtimeWeather.setLastUpdated(new Date());
 		
+		RealtimeWeatherDTO dto = new RealtimeWeatherDTO();
+		dto.setTemperature(12);
+		dto.setHumidity(32);
+		dto.setPrecipitation(88);
+		dto.setStatus("Cloudy");
+		dto.setWindSpeed(5);
+		
 		Location location = new Location();
 		location.setCode(locationCode);
-		location.setCityName("Uch Sharif");
-		location.setRegionName("Bahwalpur");
-		location.setCountryCode("PK");
+		location.setCityName("Ahmad Pur East");
+		location.setRegionName("Punjab");
 		location.setCountryName("Pakistan");
+		location.setCountryCode("PK");
 		
-		location.setRealtimeWeather(realtimeWeather);
 		realtimeWeather.setLocation(location);
-		
+		location.setRealtimeWeather(realtimeWeather);
 		
 		Mockito.when(realtimeWeatherService.update(locationCode, realtimeWeather)).thenReturn(realtimeWeather);
 		
+		String bodyContent = mapper.writeValueAsString(dto);
 		
-		
-		String bodyContent = mapper.writeValueAsString(realtimeWeather);
 		String expectedLocation = location.getCityName() + ", " + location.getRegionName() + ", " + location.getCountryName();
-
-		System.out.println(realtimeWeather);
-		mockMvc.perform(put(uriPath).contentType("application/json").content(bodyContent)).
-		andExpect(jsonPath("$.location", is(expectedLocation)))
+		
+		mockMvc.perform(put(requestURI).contentType("application/json").content(bodyContent))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.location", is(expectedLocation)))
 		.andExpect(status().isOk()).andDo(print());
 		//System.out.println(" Details :"+realtimeWeather);
 		

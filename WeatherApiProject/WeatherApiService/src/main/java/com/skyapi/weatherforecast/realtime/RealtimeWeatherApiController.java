@@ -26,13 +26,11 @@ import jakarta.validation.Valid;
 public class RealtimeWeatherApiController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeWeatherApiController.class);
+
 	private RealtimeWeatherService realtimeWeatherService;
 	private GeolocationService geolocationService;
 	private ModelMapper modelMapper;
 
-  
-
-	
 	public RealtimeWeatherApiController(RealtimeWeatherService realtimeWeatherService,
 			GeolocationService geolocationService, ModelMapper mapper) {
 		super();
@@ -41,53 +39,52 @@ public class RealtimeWeatherApiController {
 		this.modelMapper = mapper;
 	}
 
-
-
-
 	@GetMapping
-	public ResponseEntity<?> getRealtimeWeatherByIPAddress(HttpServletRequest request){
+	public ResponseEntity<?> getRealtimeWeatherByIPAddress(HttpServletRequest request) {
 		String ipAddress = CommonUtlity.getIPAddress(request);
-		
+
 		try {
 			Location locationFromIp = geolocationService.getLocation(ipAddress);
 			RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocation(locationFromIp);
-			
-			return  ResponseEntity.ok(entity2DTO(realtimeWeather));
-			
+
+			return ResponseEntity.ok(entity2DTO(realtimeWeather));
+
 		} catch (GeoLocationException ex) {
-		   LOGGER.error(ex.getMessage(), ex);
-		   
-		   return ResponseEntity.badRequest().build();
-			
-		} 
-		
+			LOGGER.error(ex.getMessage(), ex);
+
+			return ResponseEntity.badRequest().build();
+
+		}
+
 	}
-	
+
 	@GetMapping("/{locationCode}")
-	public ResponseEntity<?> getRealtimeByLocationCode(@PathVariable("locationCode") String locationCode){
+	public ResponseEntity<?> getRealtimeByLocationCode(@PathVariable("locationCode") String locationCode) {
 
-			RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocationCode(locationCode);
-			
-			
-			return  ResponseEntity.ok(entity2DTO(realtimeWeather));
-			
-		
+		RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocationCode(locationCode);
+
+		return ResponseEntity.ok(entity2DTO(realtimeWeather));
+
 	}
-	
+
 	@PutMapping("/{locationCode}")
-	public ResponseEntity<?> updateRealtimeByLocationCode(@PathVariable("locationCode") String locationCode, @RequestBody @Valid RealtimeWeather realtimeWeatherInRequest){
-		realtimeWeatherInRequest.setLocationCode(locationCode);
-	
-			RealtimeWeather updatedRealtimeWeather = realtimeWeatherService.update(locationCode, realtimeWeatherInRequest);
-			
-			return ResponseEntity.ok(entity2DTO(updatedRealtimeWeather));
-			
+	public ResponseEntity<?> updateRealtimeByLocationCode(@PathVariable("locationCode") String locationCode,
+			@RequestBody @Valid RealtimeWeatherDTO dto) {
 
-		
-	
+		RealtimeWeather realtimeWeather = dto2Entity(dto);
+		realtimeWeather.setLocationCode(locationCode);
+
+		RealtimeWeather updatedRealtimeWeather = realtimeWeatherService.update(locationCode, realtimeWeather);
+
+		return ResponseEntity.ok(entity2DTO(updatedRealtimeWeather));
+
 	}
-	
+
 	private RealtimeWeatherDTO entity2DTO(RealtimeWeather realtimeWeather) {
 		return modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
+	}
+
+	private RealtimeWeather dto2Entity(RealtimeWeatherDTO dto) {
+		return modelMapper.map(dto, RealtimeWeather.class);
 	}
 }
