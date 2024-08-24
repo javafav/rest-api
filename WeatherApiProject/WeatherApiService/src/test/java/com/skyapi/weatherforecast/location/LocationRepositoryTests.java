@@ -118,7 +118,7 @@ public class LocationRepositoryTests {
 		String code = "UCH_PK";
 		Location location = repo.findByCode(code);
 		
-		List<HourlyWeather> listHourlyWeathers = location.getListHourlyWeathers();
+		List<HourlyWeather> listHourlyWeathers = location.getListHourlyWeather();
 		HourlyWeather forecast1 = new HourlyWeather().id(8, location)
 				                                 .precipitation(50)
 				                                 .temperature(32)
@@ -133,7 +133,7 @@ public class LocationRepositoryTests {
 		listHourlyWeathers.add(forecast2);
 		Location updatedLocation = repo.save(location);
 		
-		assertThat(updatedLocation.getListHourlyWeathers()).isNotEmpty();		
+		assertThat(updatedLocation.getListHourlyWeather()).isNotEmpty();		
 		
                
 				                                

@@ -14,21 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.skyapi.weatherforecast.CommonUtlity;
-import com.skyapi.weatherforecast.GeoLocationException;
 import com.skyapi.weatherforecast.GeolocationService;
 import com.skyapi.weatherforecast.common.DailyWeather;
-import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
 import com.skyapi.weatherforecast.hourly.BadRequestException;
-import com.skyapi.weatherforecast.hourly.HourlyWeatherDTO;
-import com.skyapi.weatherforecast.hourly.HourlyWeatherListDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/daily")
-
+@Validated
 public class DailyWeatherApiController {
 
 	private DailyWeatherService dailyWeatherService;

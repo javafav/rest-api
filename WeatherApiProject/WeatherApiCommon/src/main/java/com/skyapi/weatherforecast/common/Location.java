@@ -44,7 +44,7 @@ public class Location {
 	private RealtimeWeather realtimeWeather;
 	
 	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<HourlyWeather> listHourlyWeathers =  new ArrayList<>();
+	private List<HourlyWeather> listHourlyWeather =  new ArrayList<>();
 	
 	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DailyWeather> listDailyWeather = new ArrayList<>();
@@ -150,14 +150,16 @@ public class Location {
 		this.realtimeWeather = realtimeWeather;
 	}
 
-	public List<HourlyWeather> getListHourlyWeathers() {
-		return listHourlyWeathers;
+
+	
+	public List<HourlyWeather> getListHourlyWeather() {
+		return listHourlyWeather;
 	}
 
-	public void setListHourlyWeathers(List<HourlyWeather> listHourlyWeathers) {
-		this.listHourlyWeathers = listHourlyWeathers;
+	public void setListHourlyWeather(List<HourlyWeather> listHourlyWeather) {
+		this.listHourlyWeather = listHourlyWeather;
 	}
-	
+
 	public Location code(String code) {
 		setCode(code);
 		return this;
