@@ -13,9 +13,11 @@ import jakarta.validation.constraints.NotBlank;
 public class HourlyWeatherDTO {
 
 	@JsonProperty("hour_of_day")
+	@Range(min = 0,max = 23, message = "Hour must be in between 0-23")
 	private int hourOfDay;
 	
 	@Range(min = -50,max = 50, message = "Temperature must be in the range of -50 to 50 Celsius degree")
+	
 	private int temperature;
 	
 	@Range(min = 0, max = 100, message = "Precipitation must be in the range of 0 to 100 percentage")

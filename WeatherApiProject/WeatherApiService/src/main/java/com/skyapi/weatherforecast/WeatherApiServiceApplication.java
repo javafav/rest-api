@@ -42,6 +42,11 @@ public class WeatherApiServiceApplication {
 		 var typeMap5 = mapper.typeMap(Location.class, FullWeatherDTO.class);
 		 typeMap5.addMapping(src -> src.toString(), FullWeatherDTO::setLocation);
 		 
+		 var typeMap6 = mapper.typeMap(RealtimeWeatherDTO.class, RealtimeWeather.class);
+		 typeMap6.addMappings(m -> m.skip(RealtimeWeather::setLocation));
+
+		 
+		 
 
 		 
 		 return mapper;

@@ -82,5 +82,35 @@ public class DailyWeatherDTO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	public DailyWeatherDTO dayOfMonth(int day) {
+		setDayOfMonth(day);
+		return this;
+	}
+	
+	public DailyWeatherDTO month(int month) {
+		setMonth(month);
+		return this;
+	}
+	
+	public DailyWeatherDTO minTemp(int temp) {
+		setMinTemp(temp);
+		return this;
+	}
+	
+	public DailyWeatherDTO maxTemp(int temp) {
+		setMaxTemp(temp);
+		return this;
+	}	
+	
+	public DailyWeatherDTO precipitation(int precipitation) {
+		setPrecipitation(precipitation);
+		return this;
+	}
+	
+	public DailyWeatherDTO status(String status) {
+		setStatus(status);
+		return this;
+	}
 
 }
