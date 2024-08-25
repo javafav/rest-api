@@ -30,7 +30,7 @@ public class HourlyWeatherListDTO {
 	}
 
 	public void add(HourlyWeatherDTO dto) {
-		hourlyForecast.add(dto);
+		this.hourlyForecast.add(dto);
 	}
 
 }

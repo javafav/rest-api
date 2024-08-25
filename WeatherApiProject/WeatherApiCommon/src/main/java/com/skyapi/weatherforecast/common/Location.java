@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.hibernate.validator.constraints.Length;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,8 +14,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "locations")
@@ -49,7 +44,10 @@ public class Location {
 	private RealtimeWeather realtimeWeather;
 	
 	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<HourlyWeather> listHourlyWeathers =  new ArrayList<>();
+	private List<HourlyWeather> listHourlyWeather =  new ArrayList<>();
+	
+	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<DailyWeather> listDailyWeather = new ArrayList<>();
 	
 	public Location() {}
 	
@@ -152,18 +150,30 @@ public class Location {
 		this.realtimeWeather = realtimeWeather;
 	}
 
-	public List<HourlyWeather> getListHourlyWeathers() {
-		return listHourlyWeathers;
+
+	
+	public List<HourlyWeather> getListHourlyWeather() {
+		return listHourlyWeather;
 	}
 
-	public void setListHourlyWeathers(List<HourlyWeather> listHourlyWeathers) {
-		this.listHourlyWeathers = listHourlyWeathers;
+	public void setListHourlyWeather(List<HourlyWeather> listHourlyWeather) {
+		this.listHourlyWeather = listHourlyWeather;
 	}
-	
+
 	public Location code(String code) {
 		setCode(code);
 		return this;
 	}
+
+	public List<DailyWeather> getListDailyWeather() {
+		return listDailyWeather;
+	}
+
+	public void setListDailyWeather(List<DailyWeather> listDailyWeather) {
+		this.listDailyWeather = listDailyWeather;
+	}
+	
+	
 	
 	
 

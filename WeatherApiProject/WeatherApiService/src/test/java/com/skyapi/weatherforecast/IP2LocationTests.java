@@ -11,7 +11,7 @@ import com.ip2location.IPResult;
 
 public class IP2LocationTests {
 
-	String  DBPath = "iploc2db/IP2LOCATION-LITE-DB3.BIN";
+	String  DBPath = "/iploc2db/IP2LOCATION-LITE-DB3.BIN";
 	
 	@Test
 	public void testIpInvalid() throws IOException {

@@ -2,7 +2,6 @@ package com.skyapi.weatherforecast.location;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,10 +20,10 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.skyapi.weatherforecast.GeoLocationException;
 import com.skyapi.weatherforecast.hourly.BadRequestException;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
@@ -44,6 +42,25 @@ public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorDTO  handleBadRequestException(HttpServletRequest request, BadRequestException ex) {
+	
+		ErrorDTO error = new ErrorDTO();
+		
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.addErrors(ex.getMessage());
+		error.setPath(request.getServletPath());
+		
+		LOGGER.error(ex.getMessage(), ex);
+		
+		return error;
+		
+		
+	}
+    
+    @ExceptionHandler(GeoLocationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorDTO  handleBadRequestException(HttpServletRequest request, GeoLocationException ex) {
 	
 		ErrorDTO error = new ErrorDTO();
 		

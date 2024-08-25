@@ -5,7 +5,6 @@ import java.util.Objects;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
@@ -110,6 +109,8 @@ public class HourlyWeather {
 		HourlyWeather other = (HourlyWeather) obj;
 		return Objects.equals(id, other.id);
 	}
+	
+	
 	public HourlyWeather getShallowCopy() {
 		HourlyWeather copy = new HourlyWeather();
 		copy.setId(this.getId());
