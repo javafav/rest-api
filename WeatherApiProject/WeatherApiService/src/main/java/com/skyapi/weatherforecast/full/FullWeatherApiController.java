@@ -1,7 +1,5 @@
 package com.skyapi.weatherforecast.full;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.skyapi.weatherforecast.CommonUtlity;
 import com.skyapi.weatherforecast.GeolocationService;
 import com.skyapi.weatherforecast.common.Location;
-import com.skyapi.weatherforecast.daily.DailyWeatherDTO;
 import com.skyapi.weatherforecast.hourly.BadRequestException;
-import com.skyapi.weatherforecast.hourly.HourlyWeatherDTO;
-import com.skyapi.weatherforecast.realtime.RealtimeWeatherDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -59,40 +54,35 @@ public class FullWeatherApiController {
     @GetMapping("/{code}")
     public ResponseEntity<?> getFullWeatherByLocationCode(@PathVariable("code") String code){
     	
-    	Location locationInDB = weatherService.getByLocationCode(code);
+    	Location locationInDB = weatherService.get(code);
     	return ResponseEntity.ok(entity2DTO(locationInDB));
     	
     }
     
-    @PutMapping("/{code}")
-    public ResponseEntity<?> updateFulWeatherByLocationCode(@PathVariable String code,
-    		@RequestBody @Valid FullWeatherDTO dto){
-    
-    	List<HourlyWeatherDTO> listHourlyWeather = dto.getListHourlyWeather();
-    
-    	if(listHourlyWeather.isEmpty()) {
-    		throw new BadRequestException("Hourly weather data can not be empty");
-    	}
-    	
-    	List<DailyWeatherDTO> listDailyWeather = dto.getListDailyWeather();
-    	
-    	if(listDailyWeather.isEmpty()) {
-    		throw new BadRequestException("Daily weather data can not be empty");
-    	}
-    	
-    	Location locationInRequest = dto2Entity(dto);
-    	
-    	Location updatedLocation = weatherService.update(code, locationInRequest);
-    	
-    	
-    	return ResponseEntity.ok(entity2DTO(updatedLocation));
-    
-    }
-    
+	@PutMapping("/{locationCode}")
+	public ResponseEntity<?> updateFullWeather(@PathVariable String locationCode, 
+			@RequestBody @Valid FullWeatherDTO dto) throws BadRequestException {
+		
+		if (dto.getListHourlyWeather().isEmpty()) {
+			throw new BadRequestException("Hourly weather data cannot be empty");
+		}
+		
+		if (dto.getListDailyWeather().isEmpty()) {
+			throw new BadRequestException("Daily weather data cannot be empty");
+		}
+		
+		Location locationInRequest = dto2Entity(dto);
+		
+		Location updatedLocation = weatherService.update(locationCode, locationInRequest);
+		
+		return ResponseEntity.ok(entity2DTO(updatedLocation));
+	}
+	
     private FullWeatherDTO entity2DTO(Location entity) {
     	
    	 FullWeatherDTO dto = modelMapper.map(entity, FullWeatherDTO.class);
    	 dto.getRealtimeWeather().setLocation(null);
+   	
    	 return dto;
    }
     

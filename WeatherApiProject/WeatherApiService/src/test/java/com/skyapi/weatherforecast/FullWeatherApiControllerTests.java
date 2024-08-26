@@ -125,7 +125,7 @@ public class FullWeatherApiControllerTests {
 		String requestURI = END_POINT_PATH + "/" + locationCode;
 
 		LocationNotFoundException ex = new LocationNotFoundException(locationCode);
-		when(weatherService.getByLocationCode(locationCode)).thenThrow(ex);
+		when(weatherService.get(locationCode)).thenThrow(ex);
 
 		mockMvc.perform(get(requestURI)).andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.errors[0]", is(ex.getMessage()))).andDo(print());
@@ -169,7 +169,7 @@ public class FullWeatherApiControllerTests {
 
 		location.setListHourlyWeather(List.of(hourlyForecast1, hourlyForecast2));
 
-		when(weatherService.getByLocationCode(locationCode)).thenReturn(location);
+		when(weatherService.get(locationCode)).thenReturn(location);
 
 		String expectedLocation = location.toString();
 
@@ -192,7 +192,7 @@ public class FullWeatherApiControllerTests {
 
 		mockMvc.perform(put(requestURI).contentType("application/json").content(requestBody))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0]", is("Hourly weather data can not be empty"))).andDo(print());
+				.andExpect(jsonPath("$.errors[0]", is("Hourly weather data cannot be empty"))).andDo(print());
 	}
 
 	@Test
@@ -203,220 +203,182 @@ public class FullWeatherApiControllerTests {
 		HourlyWeatherDTO hourlyForecast = new HourlyWeatherDTO().hourOfDay(11).temperature(15).precipitation(60)
 				.status("Sunny");
 
+	
+
 		FullWeatherDTO dto = new FullWeatherDTO();
 		dto.getListHourlyWeather().add(hourlyForecast);
+		
 
 		String requestBody = objectMapper.writeValueAsString(dto);
 
 		mockMvc.perform(put(requestURI).contentType("application/json").content(requestBody))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0]", is("Daily weather data can not be empty"))).andDo(print());
+				.andExpect(jsonPath("$.errors[0]", is("Daily weather data cannot be empty"))).andDo(print());
 	}
 
 	@Test
 	public void testUpdateShouldReturn400BadRequestBecauseInvalidRealtimeWeatherData() throws Exception {
 		String locationCode = "NYC_USA";
 		String requestURI = END_POINT_PATH + "/" + locationCode;
-		
+
 		FullWeatherDTO fullWeatherDTO = new FullWeatherDTO();
-		
-		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO()
-				.hourOfDay(10)
-				.temperature(13)
-				.precipitation(70)
-				.status("Cloudy");			
-		
+
+		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO().hourOfDay(10).temperature(13).precipitation(70)
+				.status("Cloudy");
+
 		fullWeatherDTO.getListHourlyWeather().add(hourlyForecast1);
-		
-		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO()
-				.dayOfMonth(17)
-				.month(7)
-				.minTemp(25)
-				.maxTemp(34)
-				.precipitation(30)
-				.status("Sunny");		
-		
+
+		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO().dayOfMonth(17).month(7).minTemp(25).maxTemp(34)
+				.precipitation(30).status("Sunny");
+
 		fullWeatherDTO.getListDailyWeather().add(dailyForecast1);
-		
+
 		RealtimeWeatherDTO realtimeDTO = new RealtimeWeatherDTO();
 		realtimeDTO.setTemperature(122);
-		realtimeDTO.setHumidity(320);
+		realtimeDTO.setHumidity(20);
 		realtimeDTO.setLastUpdated(new Date());
 		realtimeDTO.setPrecipitation(88);
 		realtimeDTO.setStatus("Cloudy");
-		realtimeDTO.setWindSpeed(5);		
-		
+		realtimeDTO.setWindSpeed(5);
+
 		fullWeatherDTO.setRealtimeWeather(realtimeDTO);
-		
+
 		String requestBody = objectMapper.writeValueAsString(fullWeatherDTO);
-		
+
 		mockMvc.perform(put(requestURI).contentType("application/json").content(requestBody))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0]", containsString("Temperature must be in the range")))
-				.andDo(print());
-	}	
-	
-	
+				.andExpect(jsonPath("$.errors[0]", containsString("Temperature must be in the range"))).andDo(print());
+	}
+
 	@Test
 	public void testUpdateShouldReturn400BadRequestBecauseInvalidHoulryWeatherData() throws Exception {
 		String locationCode = "NYC_USA";
 		String requestURI = END_POINT_PATH + "/" + locationCode;
-		
+
 		FullWeatherDTO fullWeatherDTO = new FullWeatherDTO();
-		
-		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO()
-				.hourOfDay(100)
-				.temperature(13)
-				
-				.precipitation(70)
-				.status("Cloudy");			
-		
+
+		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO().hourOfDay(100).temperature(13)
+
+				.precipitation(70).status("Cloudy");
+
 		fullWeatherDTO.getListHourlyWeather().add(hourlyForecast1);
-		
-		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO()
-				.dayOfMonth(17)
-				.month(7)
-				.minTemp(25)
-				.maxTemp(34)
-				.precipitation(30)
-				.status("Sunny");		
-		
+
+		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO().dayOfMonth(17).month(7).minTemp(25).maxTemp(34)
+				.precipitation(30).status("Sunny");
+
 		fullWeatherDTO.getListDailyWeather().add(dailyForecast1);
-		
+
 		RealtimeWeatherDTO realtimeDTO = new RealtimeWeatherDTO();
 		realtimeDTO.setTemperature(12);
 		realtimeDTO.setHumidity(20);
 		realtimeDTO.setLastUpdated(new Date());
 		realtimeDTO.setPrecipitation(88);
 		realtimeDTO.setStatus("Cloudy");
-		realtimeDTO.setWindSpeed(5);		
-		
+		realtimeDTO.setWindSpeed(5);
+
 		fullWeatherDTO.setRealtimeWeather(realtimeDTO);
-		
+
 		String requestBody = objectMapper.writeValueAsString(fullWeatherDTO);
-		
+
 		mockMvc.perform(put(requestURI).contentType("application/json").content(requestBody))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0]", containsString("Hour must be in between 0-23")))
-				.andDo(print());
+				.andExpect(jsonPath("$.errors[0]", containsString("Hour must be in between 0-23"))).andDo(print());
 	}
-	
-	
+
 	@Test
 	public void testUpdateShouldReturn400BadRequestBecauseInvalidDailyWeatherData() throws Exception {
 		String locationCode = "NYC_USA";
 		String requestURI = END_POINT_PATH + "/" + locationCode;
-		
+
 		Location location = new Location();
 		location.setCode(locationCode);
-		
+
 		FullWeatherDTO fullWeatherDTO = new FullWeatherDTO();
-		
-		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO()
-				.hourOfDay(10)
-				.temperature(13)
-				
-				.precipitation(70)
-				.status("Cloudy");			
-		
+
+		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO().hourOfDay(10).temperature(13)
+
+				.precipitation(70).status("Cloudy");
+
 		fullWeatherDTO.getListHourlyWeather().add(hourlyForecast1);
-		
-		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO()
-				.dayOfMonth(17)
-				.month(70)
-				.minTemp(25)
-				.maxTemp(34)
-				.precipitation(30)
-				.status("Sunny");		
-		
+
+		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO().dayOfMonth(17).month(70).minTemp(25).maxTemp(34)
+				.precipitation(30).status("Sunny");
+
 		fullWeatherDTO.getListDailyWeather().add(dailyForecast1);
-		
+
 		RealtimeWeatherDTO realtimeDTO = new RealtimeWeatherDTO();
 		realtimeDTO.setTemperature(12);
 		realtimeDTO.setHumidity(20);
 		realtimeDTO.setLastUpdated(new Date());
 		realtimeDTO.setPrecipitation(88);
 		realtimeDTO.setStatus("Cloudy");
-		realtimeDTO.setWindSpeed(5);		
-		
+		realtimeDTO.setWindSpeed(5);
+
 		fullWeatherDTO.setRealtimeWeather(realtimeDTO);
-		
-		
-		
+
 		String requestBody = objectMapper.writeValueAsString(fullWeatherDTO);
-		
+
 		mockMvc.perform(put(requestURI).contentType("application/json").content(requestBody))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0]", containsString("Month must be between 1-12")))
-				.andDo(print());
+				.andExpect(jsonPath("$.errors[0]", containsString("Month must be between 1-12"))).andDo(print());
 	}
-	
+
 	@Test
 	public void testUpdateShouldReturn404NotFound() throws Exception {
 		String locationCode = "NYC_USA";
 		String requestURI = END_POINT_PATH + "/" + locationCode;
-		
+
 		Location location = new Location();
 		location.setCode(locationCode);
-		
+
 		FullWeatherDTO fullWeatherDTO = new FullWeatherDTO();
-		
-		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO()
-				.hourOfDay(17)
-				.temperature(13)
-				
-				.precipitation(70)
-				.status("Cloudy");			
-		
+
+		HourlyWeatherDTO hourlyForecast1 = new HourlyWeatherDTO().hourOfDay(17).temperature(13)
+
+				.precipitation(70).status("Cloudy");
+
 		fullWeatherDTO.getListHourlyWeather().add(hourlyForecast1);
-		
-		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO()
-				.dayOfMonth(17)
-				.month(7)
-				.minTemp(25)
-				.maxTemp(34)
-				.precipitation(30)
-				.status("Sunny");		
-		
+
+		DailyWeatherDTO dailyForecast1 = new DailyWeatherDTO().dayOfMonth(17).month(7).minTemp(25).maxTemp(34)
+				.precipitation(30).status("Sunny");
+
 		fullWeatherDTO.getListDailyWeather().add(dailyForecast1);
-		
+
 		RealtimeWeatherDTO realtimeDTO = new RealtimeWeatherDTO();
 		realtimeDTO.setTemperature(12);
 		realtimeDTO.setHumidity(20);
 		realtimeDTO.setLastUpdated(new Date());
 		realtimeDTO.setPrecipitation(88);
 		realtimeDTO.setStatus("Cloudy");
-		realtimeDTO.setWindSpeed(5);		
-		
-		fullWeatherDTO.setRealtimeWeather(realtimeDTO);
-		
-		LocationNotFoundException ex= new LocationNotFoundException("No location found");
-		
-		when(weatherService.update(Mockito.eq(locationCode),Mockito.any())).thenThrow(ex);
+		realtimeDTO.setWindSpeed(5);
 
-		
+		fullWeatherDTO.setRealtimeWeather(realtimeDTO);
+
+		LocationNotFoundException ex = new LocationNotFoundException("No location found");
+
+		when(weatherService.update(Mockito.eq(locationCode), Mockito.any())).thenThrow(ex);
+
 		String requestBody = objectMapper.writeValueAsString(fullWeatherDTO);
-		
+
 		mockMvc.perform(put(requestURI).contentType("application/json").content(requestBody))
 				.andExpect(status().isNotFound())
-				//.andExpect(jsonPath("$.errors[0]", containsString("Hour must be in between 0-23")))
+				// .andExpect(jsonPath("$.errors[0]", containsString("Hour must be in between
+				// 0-23")))
 				.andDo(print());
 	}
-	
-	
-	
+
 	@Test
 	public void testUpdateShouldReturn200OK() throws Exception {
 		String locationCode = "NYC_USA";
 		String requestURI = END_POINT_PATH + "/" + locationCode;
-		
+
 		Location location = new Location();
 		location.setCode(locationCode);
 		location.setCityName("New York City");
 		location.setRegionName("New York");
 		location.setCountryCode("US");
-		location.setCountryName("United States of America");	
-		
+		location.setCountryName("United States of America");
+
 		RealtimeWeather realtimeWeather = new RealtimeWeather();
 		realtimeWeather.setTemperature(12);
 		realtimeWeather.setHumidity(32);
@@ -424,72 +386,50 @@ public class FullWeatherApiControllerTests {
 		realtimeWeather.setPrecipitation(88);
 		realtimeWeather.setStatus("Cloudy");
 		realtimeWeather.setWindSpeed(5);
-		
+
 		location.setRealtimeWeather(realtimeWeather);
-		
-		DailyWeather dailyForecast1 = new DailyWeather()
-				.location(location)
-				.dayOfMonth(16)
-				.month(7)
-				.minTemp(23)
-				.maxTemp(32)
-				.precipitation(40)
-				.status("Cloudy");	
-		
+
+		DailyWeather dailyForecast1 = new DailyWeather().location(location).dayOfMonth(16).month(7).minTemp(23)
+				.maxTemp(32).precipitation(40).status("Cloudy");
+
 		location.setListDailyWeather(List.of(dailyForecast1));
-		
-		HourlyWeather hourlyForecast1 = new HourlyWeather()
-				.location(location)
-				.hourOfDay(10)
-				.temperature(13)
-				.precipitation(70)
-				.status("Cloudy");		
-			
-		
-		location.setListHourlyWeather(List.of(hourlyForecast1));		
-		
+
+		HourlyWeather hourlyForecast1 = new HourlyWeather().location(location).hourOfDay(10).temperature(13)
+				.precipitation(70).status("Cloudy");
+
+		location.setListHourlyWeather(List.of(hourlyForecast1));
+
 		FullWeatherDTO fullWeatherDTO = new FullWeatherDTO();
-		
-		HourlyWeatherDTO hourlyForecastDTO1 = new HourlyWeatherDTO()
-				.hourOfDay(10)
-				.temperature(13)
-				.precipitation(70)
-				.status("Cloudy");			
-		
+
+		HourlyWeatherDTO hourlyForecastDTO1 = new HourlyWeatherDTO().hourOfDay(10).temperature(13).precipitation(70)
+				.status("Cloudy");
+
 		fullWeatherDTO.getListHourlyWeather().add(hourlyForecastDTO1);
-		
-		DailyWeatherDTO dailyForecastDTO1 = new DailyWeatherDTO()
-				.dayOfMonth(16)
-				.month(7)
-				.minTemp(23)
-				.maxTemp(32)
-				.precipitation(40)
-				.status("Cloudy");		
-		
+
+		DailyWeatherDTO dailyForecastDTO1 = new DailyWeatherDTO().dayOfMonth(16).month(7).minTemp(23).maxTemp(32)
+				.precipitation(40).status("Cloudy");
+
 		fullWeatherDTO.getListDailyWeather().add(dailyForecastDTO1);
-		
+
 		RealtimeWeatherDTO realtimeDTO = new RealtimeWeatherDTO();
 		realtimeDTO.setTemperature(12);
 		realtimeDTO.setHumidity(32);
 		realtimeDTO.setLastUpdated(new Date());
 		realtimeDTO.setPrecipitation(88);
 		realtimeDTO.setStatus("Cloudy");
-		realtimeDTO.setWindSpeed(5);	
-		
+		realtimeDTO.setWindSpeed(5);
+
 		fullWeatherDTO.setRealtimeWeather(realtimeDTO);
-		
+
 		String requestBody = objectMapper.writeValueAsString(fullWeatherDTO);
-		
+
 		when(weatherService.update(Mockito.eq(locationCode), Mockito.any())).thenReturn(location);
-		
+
 		mockMvc.perform(put(requestURI).contentType(REQUEST_CONTENT_TYPE).content(requestBody))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(RESPONSE_CONTENT_TYPE))
+				.andExpect(status().isOk()).andExpect(content().contentType(RESPONSE_CONTENT_TYPE))
 				.andExpect(jsonPath("$.realtime_weather.temperature", is(12)))
 				.andExpect(jsonPath("$.hourly_forecast[0].hour_of_day", is(10)))
-				.andExpect(jsonPath("$.daily_forecast[0].precipitation", is(40)))
-				.andDo(print());
-	}		
-	
+				.andExpect(jsonPath("$.daily_forecast[0].precipitation", is(40))).andDo(print());
+	}
 
 }

@@ -23,8 +23,8 @@ public class HourlyWeatherDTO {
 	@Range(min = 0, max = 100, message = "Precipitation must be in the range of 0 to 100 percentage")
 	private int precipitation;
 	
-	@NotBlank(message = "Status must be not empty")
 	@Length(min = 3, max = 50, message = "Status must be in the 3 to 50 chracters")
+	@NotBlank(message = "Status must not be empty")
 	private String status;
 
 	public int getHourOfDay() {
