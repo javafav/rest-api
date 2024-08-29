@@ -173,6 +173,19 @@ public class Location {
 		this.listDailyWeather = listDailyWeather;
 	}
 	
+	public void copyFieldsFrom(Location another) {
+		setCityName(another.getCityName());
+		setRegionName(another.getRegionName());
+		setCountryCode(another.getCountryCode());
+		setCountryName(another.getCountryName());
+		setEnabled(another.isEnabled());		
+	}
+	
+	public void copyAllFieldsFrom(Location another) {
+		copyFieldsFrom(another);
+		setCode(another.getCode());
+		setTrashed(another.isTrashed());
+	}
 	
 	
 	

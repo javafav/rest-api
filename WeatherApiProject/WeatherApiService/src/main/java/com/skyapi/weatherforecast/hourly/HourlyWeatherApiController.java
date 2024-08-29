@@ -106,7 +106,7 @@ public class HourlyWeatherApiController {
 	
 	@PutMapping("/{locationCode}")
 	public ResponseEntity<?> updateHourlyWeatherForecastByLocationCode(@PathVariable("locationCode") String locationCode,
-		@RequestBody @Valid List<HourlyWeatherDTO> listDTO)  {
+		@RequestBody @Valid List<HourlyWeatherDTO> listDTO) throws BadRequestException  {
 	
 		if(listDTO.isEmpty()) {
 			throw new BadRequestException("Hourly forecast data cannot be empty");

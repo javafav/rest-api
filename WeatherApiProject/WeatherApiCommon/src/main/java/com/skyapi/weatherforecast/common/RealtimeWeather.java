@@ -35,7 +35,6 @@ public class RealtimeWeather {
 	private int windSpeed;
 	
 	@Column(length = 50)
-	
 	private String status;
 	
 	
