@@ -13,8 +13,6 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class LocationService extends AbstractLocationService {
 
-
-
 	public LocationService(LocationRepository repo) {
 		super();
 		this.repo = repo;

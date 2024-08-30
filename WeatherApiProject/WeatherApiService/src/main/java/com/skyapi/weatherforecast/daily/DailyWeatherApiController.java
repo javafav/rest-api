@@ -55,8 +55,8 @@ public class DailyWeatherApiController {
 
 	}
 
-	@GetMapping("/{code}")
-	public ResponseEntity<?> listDailyForecastByLocationCode(@PathVariable("code") String code) {
+	@GetMapping("{locationCode}")
+	public ResponseEntity<?> listDailyForecastByLocationCode(@PathVariable("locationCode") String code) {
 		List<DailyWeather> listDailyForecast = dailyWeatherService.getByLocationCode(code);
 
 		if (listDailyForecast.isEmpty()) {

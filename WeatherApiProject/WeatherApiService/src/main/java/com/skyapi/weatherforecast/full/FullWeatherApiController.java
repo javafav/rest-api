@@ -51,10 +51,10 @@ public class FullWeatherApiController {
     
 
     
-    @GetMapping("/{code}")
-    public ResponseEntity<?> getFullWeatherByLocationCode(@PathVariable("code") String code){
+    @GetMapping("/{locationCode}")
+    public ResponseEntity<?> getFullWeatherByLocationCode(@PathVariable("locationCode") String locationCode){
     	
-    	Location locationInDB = weatherService.get(code);
+    	Location locationInDB = weatherService.get(locationCode);
     	return ResponseEntity.ok(entity2DTO(locationInDB));
     	
     }

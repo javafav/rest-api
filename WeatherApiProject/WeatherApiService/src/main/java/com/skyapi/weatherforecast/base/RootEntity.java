@@ -1,6 +1,5 @@
 package com.skyapi.weatherforecast.base;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"locations_url", "location_by_code_url", "realtime_weather_by_ip_url",
@@ -9,34 +8,32 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 	"full_weather_by_ip_url", "full_weather_by_code_url"})
 public class RootEntity {
 	
-	@JsonProperty("locations_url")
-	private String locationsUrl;
 	
-	@JsonProperty("location_by_code_url")
+	private String locationsUrl;
+
 	private String locationByCodeUrl;
 	
-	@JsonProperty("realtime_weather_by_ip_url")
+
 	private String realtimeWeatherByIpUrl;
 
-	@JsonProperty("realtime_weather_by_code_url")
+
 	private String realtimeWeatherByCodeUrl;
 	
-	@JsonProperty("hourly_forecast_by_ip_url")
+
 	private String hourlyForecastByIpUrl;	
 	
-	@JsonProperty("hourly_forecast_by_code_url")
+
 	private String hourlyForecastByCodeUrl;	
 	
-	@JsonProperty("daily_forecast_by_ip_url")
+
 	private String dailyForecastByIpUrl;	
 	
-	@JsonProperty("daily_forecast_by_code_url")
 	private String dailyForecastByCodeUrl;	
 	
-	@JsonProperty("full_weather_by_ip_url")
+
 	private String fullWeatherByIpUrl;	
 	
-	@JsonProperty("full_weather_by_code_url")
+	
 	private String fullWeatherByCodeUrl;		
 	
 	public String getLocationsUrl() {

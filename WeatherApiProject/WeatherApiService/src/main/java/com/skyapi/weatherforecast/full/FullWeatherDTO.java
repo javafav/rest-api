@@ -3,8 +3,6 @@ package com.skyapi.weatherforecast.full;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.validation.annotation.Validated;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +16,7 @@ public class FullWeatherDTO {
 
 	private String location;
 
-	@JsonProperty("realtime_weather")
+
 	@JsonInclude(value = Include.CUSTOM, valueFilter  = RealtimeWeatherFieldFilter.class)
 	@Valid
 	private RealtimeWeatherDTO realtimeWeather = new RealtimeWeatherDTO();

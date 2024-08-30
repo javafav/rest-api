@@ -8,6 +8,7 @@ public abstract class AbstractLocationService {
 
 	protected LocationRepository repo;
 	
+	
 	public Location get(String code){
 		Location locationInDb = repo.findByCode(code);
 		if (locationInDb == null) {

@@ -7,6 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.skyapi.weatherforecast.common.DailyWeather;
 import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
@@ -33,6 +36,17 @@ public class WeatherApiServiceApplication {
 		configureRealtimeWeather(mapper);
 
 		return mapper;
+	}
+	
+	@Bean
+	public ObjectMapper getObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+		
+		return objectMapper;
+		
 	}
 
 	private void configureRealtimeWeather(ModelMapper mapper) {
