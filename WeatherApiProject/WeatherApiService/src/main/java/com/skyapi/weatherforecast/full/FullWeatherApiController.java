@@ -28,24 +28,31 @@ public class FullWeatherApiController {
 	private GeolocationService locationService;
     private ModelMapper modelMapper;
     private FullWeatherService weatherService;
+    private FullWeatherModelAssembler modelAssembler;
 
-    public FullWeatherApiController(GeolocationService locationService,
-    		                         ModelMapper modelMapper,
-			                         FullWeatherService weatherService) {
+
+    
+    public FullWeatherApiController(GeolocationService locationService, ModelMapper modelMapper,
+			FullWeatherService weatherService, FullWeatherModelAssembler modelAssembler) {
 		super();
 		this.locationService = locationService;
 		this.modelMapper = modelMapper;
 		this.weatherService = weatherService;
+		this.modelAssembler = modelAssembler;
 	}
-    
-    @GetMapping
+
+
+
+	@GetMapping
     public ResponseEntity<?> getFullWeatherBYIPAddress(HttpServletRequest request){
     	String ipAddress = CommonUtlity.getIPAddress(request);
     	
     	Location locationFromIP = locationService.getLocation(ipAddress);
     	Location locationInDB = weatherService.getByLocation(locationFromIP);
-    
-    	return ResponseEntity.ok(entity2DTO(locationInDB));
+    	
+    	FullWeatherDTO dto = entity2DTO(locationInDB);
+    	
+    	return ResponseEntity.ok(modelAssembler.toModel(dto));
     	
     }
     
@@ -55,7 +62,8 @@ public class FullWeatherApiController {
     public ResponseEntity<?> getFullWeatherByLocationCode(@PathVariable("locationCode") String locationCode){
     	
     	Location locationInDB = weatherService.get(locationCode);
-    	return ResponseEntity.ok(entity2DTO(locationInDB));
+    	FullWeatherDTO dto = entity2DTO(locationInDB);
+    	return ResponseEntity.ok(modelAssembler.toModel(dto, locationCode));
     	
     }
     
@@ -74,8 +82,9 @@ public class FullWeatherApiController {
 		Location locationInRequest = dto2Entity(dto);
 		
 		Location updatedLocation = weatherService.update(locationCode, locationInRequest);
+		FullWeatherDTO updatedDTO = entity2DTO(updatedLocation);
 		
-		return ResponseEntity.ok(entity2DTO(updatedLocation));
+		return ResponseEntity.ok(modelAssembler.toModel(updatedDTO, locationCode));
 	}
 	
     private FullWeatherDTO entity2DTO(Location entity) {

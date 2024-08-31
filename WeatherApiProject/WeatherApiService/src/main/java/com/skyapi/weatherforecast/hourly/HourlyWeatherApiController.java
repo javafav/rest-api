@@ -72,7 +72,7 @@ public class HourlyWeatherApiController {
 			HourlyWeatherListDTO dto = listEntity2DTO(listHourlyWeather);
 			return ResponseEntity.ok(addLinksByIpAddress(dto));
 
-		} catch (NumberFormatException | GeoLocationException ex) {
+		} catch (NumberFormatException ex ) {
 			LOGGER.error(ex.getMessage(), ex);
 
 			return ResponseEntity.badRequest().build();
