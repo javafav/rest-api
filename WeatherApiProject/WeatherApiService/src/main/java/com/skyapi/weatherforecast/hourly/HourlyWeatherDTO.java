@@ -3,16 +3,15 @@ package com.skyapi.weatherforecast.hourly;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.skyapi.weatherforecast.common.HourlyWeather;
 
 import jakarta.validation.constraints.NotBlank;
 
 @JsonPropertyOrder({"hour_of_day", "temperature", "precipitation", "status "})
 public class HourlyWeatherDTO {
 
-	@JsonProperty("hour_of_day")
+
 	@Range(min = 0,max = 23, message = "Hour must be in between 0-23")
 	private int hourOfDay;
 	
