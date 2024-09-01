@@ -1,6 +1,8 @@
 package com.skyapi.weatherforecast.location;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -9,7 +11,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotNull;
 
 @JsonPropertyOrder({"code", "city_name", "region_name", "country_code", "country_name"})
-public class LocationDTO {
+@Relation(collectionRelation = "locations")
+public class LocationDTO extends CollectionModel<LocationDTO> {
 
 	@NotNull(message = "Location code cannot be null")
 	@Length(min = 3, max = 12, message = "Location code must have 3-12 charcter")
