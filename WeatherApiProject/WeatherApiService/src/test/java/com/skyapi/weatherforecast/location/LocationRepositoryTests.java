@@ -2,14 +2,18 @@ package com.skyapi.weatherforecast.location;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 
 import com.skyapi.weatherforecast.common.DailyWeather;
@@ -46,12 +50,76 @@ public class LocationRepositoryTests {
 	}
 	
 	@Test
+	@Disabled
 	public void testListSuccess() {
 		List<Location> listLocations = repo.findUntrashed();
 		
 		assertThat(listLocations).isNotNull();
 		listLocations.forEach(System.out::print);
 	}
+	
+
+	@Test
+	public void testFirstPage() {
+		int pageSize = 4;
+		int pgaeNume = 0;
+
+		Pageable pageable = PageRequest.of(pgaeNume, pageSize);
+		Page<Location> page = repo.findUntrashed(pageable);
+
+		assertThat(page.getSize()).isEqualTo(pageSize);
+
+		page.forEach(System.out::println);
+
+	}
+
+	@Test
+	public void testNoContent() {
+		int pageSize = 4;
+		int pgaeNume = 10;
+
+		Pageable pageable = PageRequest.of(pgaeNume, pageSize);
+		Page<Location> page = repo.findUntrashed(pageable);
+
+		assertThat(page).isEmpty();
+
+	}
+	
+	@Test
+	public void testFirstPageWithSort() {
+		int pageSize = 4;
+		int pgaeNume = 0;
+		
+		Sort sort = Sort.by("code").ascending();
+
+		Pageable pageable = PageRequest.of(pgaeNume, pageSize, sort);
+		Page<Location> page = repo.findUntrashed(pageable);
+
+		assertThat(page.getSize()).isEqualTo(pageSize);
+
+		page.forEach(System.out::println);
+
+	}
+
+	
+	@Test
+	public void test2ndPageWithSort() {
+		int pageSize = 4;
+		int pgaeNume = 0;
+		
+		Sort sort = Sort.by("code").descending();
+
+		Pageable pageable = PageRequest.of(pgaeNume, pageSize, sort);
+		Page<Location> page = repo.findUntrashed(pageable);
+
+		assertThat(page.getSize()).isEqualTo(pageSize);
+
+		page.forEach(System.out::println);
+
+	}
+
+	
+	
 	
 	@Test
 	public void testLocationNotFoundByCode() {

@@ -33,17 +33,13 @@ public class GlobalExceptionHandling extends ResponseEntityExceptionHandler {
 	
     
     
-
-    
-    
-    
-    
     @ExceptionHandler(BadRequestException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorDTO  handleBadRequestException(HttpServletRequest request, BadRequestException ex) {
 	
 		ErrorDTO error = new ErrorDTO();
+		
 		
 		error.setTimestamp(new Date());
 		error.setStatus(HttpStatus.BAD_REQUEST.value());

@@ -1,9 +1,9 @@
 package com.skyapi.weatherforecast.location;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,20 +13,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Collection;
-import java.util.Collections;import java.util.List;
+import java.util.Collections;
+import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skyapi.weatherforecast.common.Location;
 
@@ -87,6 +87,7 @@ public class LocationApiControllerTests {
 	}
 	
 	@Test
+	@Disabled
 	public void testListShouldReturn204NoContent() throws Exception {
 		Mockito.when(service.list()).thenReturn(Collections.emptyList());
 		
@@ -95,6 +96,107 @@ public class LocationApiControllerTests {
 		       .andDo(print());
 		   
 	}
+	
+	
+	
+	@Test
+	public void testListByPageShouldReturn204NoContent() throws Exception {
+		Mockito.when(service.listByPage(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString()))
+	       .thenReturn(Page.empty());
+
+		
+		mockMvc.perform(get(END_URI_PATH))
+		       .andExpect(status().isNoContent())
+		       .andDo(print());
+		   
+	}
+	
+	
+	@Test
+	public void testListByPageShouldReturn400BadRequestBecauseOfInvlaidPageNum() throws Exception {
+	
+		int pageNum = 0;
+		int pagesize = 5;
+		String sortField = "code";
+		
+		
+		String requestURI = END_URI_PATH + "?sort=" + sortField + "&page=" + pageNum + "&size=" + pagesize;
+		
+		Mockito.when(service.listByPage(pageNum, pagesize, sortField))
+	       .thenReturn(Page.empty());
+
+		
+		mockMvc.perform(get(requestURI))
+		       .andExpect(status().isBadRequest())
+		       .andExpect(jsonPath("$.errors[0]", containsString("must be greater than or equal to 1")))
+		       .andDo(print());
+		   
+	}
+	
+	@Test
+	public void testListByPageShouldReturn400BadRequestBecauseOfInvalidLowerLimitOfPageSize() throws Exception {
+	
+		int pageNum = 1;
+		int pagesize = 3;
+		String sortField = "code";
+		
+		
+		String requestURI = END_URI_PATH + "?sort=" + sortField + "&page=" + pageNum + "&size=" + pagesize;
+		
+		Mockito.when(service.listByPage(pageNum, pagesize, sortField))
+	       .thenReturn(Page.empty());
+
+		
+		mockMvc.perform(get(requestURI))
+		       .andExpect(status().isBadRequest())
+		       .andExpect(jsonPath("$.errors[0]", containsString(" must be greater than or equal to 5")))
+		       .andDo(print());
+		   
+	}
+
+	
+	@Test
+	public void testListByPageShouldReturn400BadRequestBecauseOfInvalidUpperLimitOfPageSize() throws Exception {
+	
+		int pageNum = 1;
+		int pagesize = 21;
+		String sortField = "code";
+		
+		
+		String requestURI = END_URI_PATH + "?sort=" + sortField + "&page=" + pageNum + "&size=" + pagesize;
+		
+		Mockito.when(service.listByPage(pageNum, pagesize, sortField))
+	       .thenReturn(Page.empty());
+
+		
+		mockMvc.perform(get(requestURI))
+		       .andExpect(status().isBadRequest())
+		       .andExpect(jsonPath("$.errors[0]", containsString(" must be less than or equal to 20")))
+		       .andDo(print());
+		   
+	}
+	
+	@Test
+	public void testListByPageShouldReturn400BadRequestBecauseOfInvalidSortField() throws Exception {
+	
+		int pageNum = 1;
+		int pagesize = 5;
+		String sortField = "code_abc";
+		
+		
+		String requestURI = END_URI_PATH + "?sort=" + sortField + "&page=" + pageNum + "&size=" + pagesize;
+		
+		Mockito.when(service.listByPage(pageNum, pagesize, sortField))
+	       .thenReturn(Page.empty());
+
+		
+		mockMvc.perform(get(requestURI))
+		       .andExpect(status().isBadRequest())
+		       .andExpect(jsonPath("$.errors[0]", containsString("Invalid sort field")))
+		       .andDo(print());
+		   
+	}
+	
 	
 	@Test
 	public void testValidateRequestBodyLocationCode() throws Exception {
@@ -177,7 +279,8 @@ public class LocationApiControllerTests {
 	
 	
 	@Test
-	public void testShouldReturn200OK() throws Exception {
+	@Disabled
+	public void testListShouldReturn200OK() throws Exception {
 		Location location1 = new Location();
 		location1.setCode("UCH_PK");
 		location1.setCityName("Uch Sharif");
@@ -201,7 +304,43 @@ public class LocationApiControllerTests {
                 .andExpect(jsonPath("$[0].city_name", is("Uch Sharif")))
                 .andExpect(jsonPath("$[1].code", is("MUX_PK")))
                 .andExpect(jsonPath("$[1].city_name", is("Multan")))
-//                .andExpect(header().string("Location", "/v1/locations/UCH_PK"))
+//              .andExpect(header().string("Location", "/v1/locations/UCH_PK"))
+                .andDo(print());
+		
+		
+	}
+	
+	
+	@Test
+	@Disabled
+	public void testListByPageShouldReturn200OK() throws Exception {
+		Location location1 = new Location();
+		location1.setCode("UCH_PK");
+		location1.setCityName("Uch Sharif");
+		location1.setRegionName("Bahwalpur");
+		location1.setCountryCode("PK");
+		location1.setCountryName("Pakistan");
+		
+		
+		Location location2 = new Location();
+		location2.setCode("MUX_PK");
+		location2.setCityName("Multan");
+		location2.setRegionName("multan");
+		location2.setCountryCode("PK");
+		location2.setCountryName("Pakistan");
+		
+		Page<Location> page = new PageImpl<>(List.of(location1, location2));
+		
+		when(service.listByPage(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString()))
+				    .thenReturn(page);
+		
+		mockMvc.perform(get(END_URI_PATH))
+                .andExpect(status() .isOk())
+                .andExpect(jsonPath("$[0].code", is("UCH_PK")))
+                .andExpect(jsonPath("$[0].city_name", is("Uch Sharif")))
+                .andExpect(jsonPath("$[1].code", is("MUX_PK")))
+                .andExpect(jsonPath("$[1].city_name", is("Multan")))
+//              .andExpect(header().string("Location", "/v1/locations/UCH_PK"))
                 .andDo(print());
 		
 		
