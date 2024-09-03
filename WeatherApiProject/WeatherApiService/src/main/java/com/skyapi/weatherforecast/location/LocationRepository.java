@@ -11,7 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.skyapi.weatherforecast.common.Location;
 
-public interface LocationRepository extends CrudRepository<Location, String>, PagingAndSortingRepository<Location, String> {
+public interface LocationRepository extends FilterableLocationRepository, CrudRepository<Location, String>, PagingAndSortingRepository<Location, String> {
 
 	@Query("SELECT l from Location l WHERE l.trashed = false")
 	@Deprecated

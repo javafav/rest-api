@@ -26,7 +26,6 @@ import com.skyapi.weatherforecast.common.RealtimeWeather;
 @Rollback(false)
 public class LocationRepositoryTests {
 
-	private static final String END_URI_PATH = "/v1/locations";
 	
 	@Autowired
 	private LocationRepository repo;
