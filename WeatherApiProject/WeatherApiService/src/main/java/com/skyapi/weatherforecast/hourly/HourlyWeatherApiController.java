@@ -6,6 +6,8 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,8 @@ import com.skyapi.weatherforecast.GeoLocationException;
 import com.skyapi.weatherforecast.GeolocationService;
 import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
+import com.skyapi.weatherforecast.daily.DailyWeatherApiController;
+import com.skyapi.weatherforecast.full.FullWeatherApiController;
 import com.skyapi.weatherforecast.location.LocationNotFoundException;
 import com.skyapi.weatherforecast.realtime.RealtimeWeatherApiController;
 
@@ -32,6 +36,7 @@ import jakarta.validation.Valid;
 public class HourlyWeatherApiController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HourlyWeatherApiController.class);
+
 	private GeolocationService locationService;
 	private HourlyWeatherService hourlyWeatherService;
 	private ModelMapper modelMapper;
@@ -64,19 +69,15 @@ public class HourlyWeatherApiController {
 			if (listHourlyWeather.isEmpty()) {
 				return ResponseEntity.noContent().build();
 			}
-			return ResponseEntity.ok(listEntity2DTO(listHourlyWeather));
+			HourlyWeatherListDTO dto = listEntity2DTO(listHourlyWeather);
+			return ResponseEntity.ok(addLinksByIpAddress(dto));
 
-		} catch (NumberFormatException | GeoLocationException ex) {
+		} catch (NumberFormatException ex ) {
 			LOGGER.error(ex.getMessage(), ex);
 
 			return ResponseEntity.badRequest().build();
 
-		} catch (LocationNotFoundException ex) {
-			LOGGER.error(ex.getMessage(), ex);
-
-			return ResponseEntity.notFound().build();
-		}
-
+		} 
 	}
 	
 	@GetMapping("/{locationCode}")
@@ -87,13 +88,13 @@ public class HourlyWeatherApiController {
 
 			int currentHour = Integer.parseInt(request.getHeader("X-Current-Hour"));
 
-			List<HourlyWeather> hurlyForecast = hourlyWeatherService.getByLocationCode(locationCode, currentHour);
+			List<HourlyWeather> listHourlyWeather = hourlyWeatherService.getByLocationCode(locationCode, currentHour);
 
-			if (hurlyForecast.isEmpty()) {
+			if (listHourlyWeather.isEmpty()) {
 				return ResponseEntity.noContent().build();
 			}
-
-			return ResponseEntity.ok(listEntity2DTO(hurlyForecast));
+			HourlyWeatherListDTO dto = listEntity2DTO(listHourlyWeather);
+			return ResponseEntity.ok(addLinksByLocation(locationCode, dto));
 
 		} catch (NumberFormatException ex) {
 			LOGGER.error(ex.getMessage(), ex);
@@ -105,29 +106,25 @@ public class HourlyWeatherApiController {
 	}
 	
 	@PutMapping("/{locationCode}")
-	public ResponseEntity<?> updateHourlyWeatherForecastByLocationCode(@PathVariable("locationCode") String locationCode,
-		@RequestBody @Valid List<HourlyWeatherDTO> listDTO) throws BadRequestException  {
-	
-		if(listDTO.isEmpty()) {
+	public ResponseEntity<?> updateHourlyWeatherForecastByLocationCode(
+			@PathVariable("locationCode") String locationCode, @RequestBody @Valid List<HourlyWeatherDTO> listDTO)
+			throws BadRequestException {
+
+		if (listDTO.isEmpty()) {
 			throw new BadRequestException("Hourly forecast data cannot be empty");
 		}
-		
-		
-		
+
 		List<HourlyWeather> hourlyWeather = listDTO2ListEntity(listDTO);
 		listDTO.forEach(System.out::print);
 		hourlyWeather.forEach(System.out::print);
-		
-		try {
-			List<HourlyWeather> updatedHourlyForecast = hourlyWeatherService.updateByLocationCode(locationCode, hourlyWeather);
-			return ResponseEntity.ok(listEntity2DTO(updatedHourlyForecast));
-		
-		} catch (LocationNotFoundException ex) {
-			LOGGER.error(ex.getMessage(), ex);
-			
-			return ResponseEntity.notFound().build();
-		}
-		
+
+		List<HourlyWeather> updatedHourlyForecast = hourlyWeatherService.updateByLocationCode(locationCode,
+				hourlyWeather);
+
+		HourlyWeatherListDTO dto = listEntity2DTO(updatedHourlyForecast);
+
+		return ResponseEntity.ok(addLinksByLocation(locationCode, dto));
+
 	}
 	
 	private List<HourlyWeather> listDTO2ListEntity(List<HourlyWeatherDTO> listDTO) {
@@ -150,12 +147,57 @@ public class HourlyWeatherApiController {
         
        hourlyFoecast.forEach(hourlyWeather -> {
     	   
-        listDTO.add(modelMapper.map(hourlyWeather, HourlyWeatherDTO.class));
+        listDTO.addHourlyFoecast(modelMapper.map(hourlyWeather, HourlyWeatherDTO.class));
         	
         });
 		
 		return  listDTO;
 	}
 	
+	public HourlyWeatherListDTO addLinksByIpAddress(HourlyWeatherListDTO dto) {
+		
+		dto.add(linkTo(
+				       methodOn(HourlyWeatherApiController.class).listHourlyForecastByIPAddress(null))
+				       .withSelfRel());
+		dto.add(linkTo(
+				   methodOn(RealtimeWeatherApiController.class).getRealtimeWeatherByIPAddress(null))
+				   .withRel("realtime") );
+		
+		dto.add(linkTo(
+				   methodOn(DailyWeatherApiController.class).listDailyForecastByIPAdress(null))
+				   .withRel("daily_forecast"));
+		
+
+		dto.add(linkTo(
+			            methodOn(FullWeatherApiController.class).getFullWeatherBYIPAddress(null))
+				     .withRel("full_forecast"));
+		
+		
+		
+		return dto;
+	}
+	
+	public HourlyWeatherListDTO addLinksByLocation(String locationCode, HourlyWeatherListDTO dto) {
+		
+		dto.add(linkTo(
+				       methodOn(HourlyWeatherApiController.class).listHourlyWeatherForecastByLocationCode(null, locationCode))
+				       .withSelfRel());
+		dto.add(linkTo(
+				   methodOn(RealtimeWeatherApiController.class).getRealtimeByLocationCode(locationCode))
+				   .withRel("realtime") );
+		
+		dto.add(linkTo(
+				   methodOn(DailyWeatherApiController.class).listDailyForecastByLocationCode(locationCode))
+				   .withRel("daily_forecast"));
+		
+
+		dto.add(linkTo(
+			            methodOn(FullWeatherApiController.class).getFullWeatherByLocationCode(locationCode))
+				     .withRel("full_forecast"));
+		
+		
+		
+		return dto;
+	}
 	
 }

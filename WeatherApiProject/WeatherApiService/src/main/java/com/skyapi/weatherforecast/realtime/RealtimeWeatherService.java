@@ -43,7 +43,7 @@ public class RealtimeWeatherService {
 		RealtimeWeather realtimeWeather = realtimeWeatherRepo.findByLocationCode(locationCode);
 		
 		if(realtimeWeather == null ) {
-			throw new LocationNotFoundException("Could not find weather information for given code " + locationCode);
+			throw new LocationNotFoundException(locationCode);
 		}
 		return realtimeWeather;
 	}

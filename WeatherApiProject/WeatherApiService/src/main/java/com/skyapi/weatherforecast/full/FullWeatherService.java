@@ -3,6 +3,7 @@ package com.skyapi.weatherforecast.full;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.skyapi.weatherforecast.AbstractLocationService;
@@ -16,18 +17,18 @@ import com.skyapi.weatherforecast.location.LocationRepository;
 @Service
 public class FullWeatherService extends AbstractLocationService {
 
-	private LocationRepository locationRepo;
+
 
 	public FullWeatherService(LocationRepository locationRepo) {
 		super();
-		this.locationRepo = locationRepo;
+		this.repo = locationRepo;
 	}
 
 	public Location getByLocation(Location locationFromIP) {
 		String cityName = locationFromIP.getCityName();
 		String countryCode = locationFromIP.getCountryCode();
 
-		Location locationInDB = locationRepo.findByCountryCodeAndCityName(countryCode, cityName);
+		Location locationInDB = repo.findByCountryCodeAndCityName(countryCode, cityName);
 
 		if (locationInDB == null) {
 			throw new LocationNotFoundException(countryCode, cityName);
@@ -37,7 +38,7 @@ public class FullWeatherService extends AbstractLocationService {
 	}
 
 	public Location update(String locationCode, Location locationInRequest) {
-		Location locationInDB = locationRepo.findByCode(locationCode);
+		Location locationInDB = repo.findByCode(locationCode);
 
 		if (locationInDB == null) {
 			throw new LocationNotFoundException(locationCode);
@@ -53,14 +54,14 @@ public class FullWeatherService extends AbstractLocationService {
 
 		locationInRequest.copyAllFieldsFrom(locationInDB);
 
-		return locationRepo.save(locationInRequest);
+		return repo.save(locationInRequest);
 	}
 
 	private void setRealtimeIfNotExistBefore(Location locationInDB, Location locationInRequest) {
 		if (locationInDB.getRealtimeWeather() == null) {
 
 			locationInDB.setRealtimeWeather(locationInRequest.getRealtimeWeather());
-			locationRepo.save(locationInDB);
+			repo.save(locationInDB);
 		}
 	}
 

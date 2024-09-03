@@ -28,31 +28,39 @@ public class Location {
 
 	@Column(length = 64)
 	private String regionName;
- 
-	
+
 	@Column(length = 64, nullable = false)
-    private String countryName;
+	private String countryName;
 
 	@Column(length = 2, nullable = false)
 	private String countryCode;
 
 	private boolean enabled;
-	
-	@OneToOne(mappedBy = "location" , cascade = CascadeType.ALL)
+
+	@OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
 	@JsonIgnore
 	private RealtimeWeather realtimeWeather;
-	
+
 	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<HourlyWeather> listHourlyWeather =  new ArrayList<>();
-	
+	private List<HourlyWeather> listHourlyWeather = new ArrayList<>();
+
 	@OneToMany(mappedBy = "id.location", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DailyWeather> listDailyWeather = new ArrayList<>();
-	
-	public Location() {}
-	
-	public Location( String cityName, String regionName, String countryName,String countryCode) {
-		
+
+	public Location() {
+	}
+
+	public Location(String cityName, String regionName, String countryName, String countryCode) {
+
+		this.cityName = cityName;
+		this.regionName = regionName;
+		this.countryName = countryName;
+		this.countryCode = countryCode;
+	}
+
+	public Location(String code, String cityName, String regionName, String countryName, String countryCode) {
+		this.code = code;
 		this.cityName = cityName;
 		this.regionName = regionName;
 		this.countryName = countryName;
@@ -67,7 +75,7 @@ public class Location {
 	}
 
 	public void setCode(String code) {
-	
+
 		this.code = code;
 	}
 
@@ -79,7 +87,7 @@ public class Location {
 		this.cityName = cityName;
 	}
 
-   public String getRegionName() {
+	public String getRegionName() {
 		return regionName;
 	}
 
@@ -94,7 +102,6 @@ public class Location {
 	public void setCountryName(String countryName) {
 		this.countryName = countryName;
 	}
-  
 
 	public String getCountryCode() {
 		return countryCode;
@@ -139,7 +146,7 @@ public class Location {
 
 	@Override
 	public String toString() {
-		return cityName + ", " +  (regionName != null ? regionName + ", " : "" ) +    countryName;
+		return code + " => " + cityName + ", " + (regionName != null ? regionName + ", " : "") + countryName;
 	}
 
 	public RealtimeWeather getRealtimeWeather() {
@@ -150,8 +157,6 @@ public class Location {
 		this.realtimeWeather = realtimeWeather;
 	}
 
-
-	
 	public List<HourlyWeather> getListHourlyWeather() {
 		return listHourlyWeather;
 	}
@@ -172,22 +177,19 @@ public class Location {
 	public void setListDailyWeather(List<DailyWeather> listDailyWeather) {
 		this.listDailyWeather = listDailyWeather;
 	}
-	
+
 	public void copyFieldsFrom(Location another) {
 		setCityName(another.getCityName());
 		setRegionName(another.getRegionName());
 		setCountryCode(another.getCountryCode());
 		setCountryName(another.getCountryName());
-		setEnabled(another.isEnabled());		
+		setEnabled(another.isEnabled());
 	}
-	
+
 	public void copyAllFieldsFrom(Location another) {
 		copyFieldsFrom(another);
 		setCode(another.getCode());
 		setTrashed(another.isTrashed());
 	}
-	
-	
-	
 
 }

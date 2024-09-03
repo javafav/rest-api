@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -12,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class RealtimeWeatherDTO {
+public class RealtimeWeatherDTO extends RepresentationModel<RealtimeWeatherDTO> {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String location;

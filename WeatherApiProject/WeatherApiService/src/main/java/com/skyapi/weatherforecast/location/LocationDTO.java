@@ -1,37 +1,39 @@
 package com.skyapi.weatherforecast.location;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import jakarta.validation.constraints.NotNull;
 
 @JsonPropertyOrder({"code", "city_name", "region_name", "country_code", "country_name"})
-public class LocationDTO {
+@Relation(collectionRelation = "locations")
+public class LocationDTO extends CollectionModel<LocationDTO> {
 
 	@NotNull(message = "Location code cannot be null")
 	@Length(min = 3, max = 12, message = "Location code must have 3-12 charcter")
 	private String code;
 	
-	@JsonProperty("city_name")
+	
 	@NotNull(message = "City name cannot be null")
 	@Length(min = 3, max = 128, message = "City name must have 3-128 charcter")
 	private String cityName;
 	
-	@JsonProperty("region_name")
+	
 	@Length(min = 3, max = 64, message = "Region name must have 3-64 charcter")
 	@JsonInclude(value = Include.NON_NULL)
 	private String regionName;
 	
-	@JsonProperty("country_name")
+
 	@NotNull(message = "Country name cannot be null")
 	@Length(min = 3, max = 64, message = "Country name must have 3-64 charcter")
 	private String countryName;
 	
-	@JsonProperty("country_code")
+	
 	@Length(min = 2, max = 2,  message = "Country code must have 2 characters")
 	@NotNull(message = "Country code cannot be null")
 	private String countryCode;
