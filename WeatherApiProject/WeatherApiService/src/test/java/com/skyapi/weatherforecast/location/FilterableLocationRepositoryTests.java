@@ -30,7 +30,7 @@ public class FilterableLocationRepositoryTests {
 	private LocationRepository repo;
 	
 	@Test
-	public void testListWithFilters() {
+	public void testListWithDefaults() {
 		int pageNum = 1;
 		int pageSize = 5;
 		
@@ -42,7 +42,8 @@ public class FilterableLocationRepositoryTests {
 		List<Location> content = page.getContent();
 		content.forEach(System.out::println);
 
-		
+        System.out.println("Total Elemetns: " + page.getTotalElements());
+		assertThat(page.getTotalElements()).isGreaterThan(pageable.getOffset() + content.size());
 		assertThat(content.size()).isEqualTo(pageSize);
 		assertThat(content).isSortedAccordingTo((new Comparator<Location>() {
 
@@ -67,7 +68,8 @@ public class FilterableLocationRepositoryTests {
 		List<Location> content = page.getContent();
 		content.forEach(System.out::println);
 
-		
+		System.out.println("Total Elemetns: " + page.getTotalElements());
+		assertThat(page.getTotalElements()).isGreaterThan(pageable.getOffset() + content.size());
 		assertThat(content.size()).isEqualTo(pageSize);
 		assertThat(content).isSortedAccordingTo((new Comparator<Location>() {
 
@@ -96,7 +98,8 @@ public class FilterableLocationRepositoryTests {
 		List<Location> content = page.getContent();
 		content.forEach(System.out::println);
 
-		
+		System.out.println("Total Elemetns: " + page.getTotalElements());
+		assertThat(page.getTotalElements()).isGreaterThan(pageable.getOffset() + content.size());
 		assertThat(content.size()).isEqualTo(pageSize);
 		assertThat(content).isSortedAccordingTo((new Comparator<Location>() {
 
@@ -111,7 +114,7 @@ public class FilterableLocationRepositoryTests {
 	
 	@Test
 	public void testListFilterByCountryCodeSortedByCode() {
-		int pageNum = 1;
+		int pageNum = 2;
 		int pageSize = 5;
 		
 		String sortField = "code";
@@ -126,6 +129,8 @@ public class FilterableLocationRepositoryTests {
 		List<Location> content = page.getContent();
 		
 
+		System.out.println("Total Elemetns: " + page.getTotalElements());
+		assertThat(page.getTotalElements()).isGreaterThan(pageable.getOffset() + content.size());
 		
 		assertThat(content.size()).isEqualTo(pageSize);
 		assertThat(content).isSortedAccordingTo((new Comparator<Location>() {
@@ -159,7 +164,8 @@ public class FilterableLocationRepositoryTests {
 		List<Location> content = page.getContent();
 		
 
-		
+		System.out.println("Total Elemetns: " + page.getTotalElements());
+		assertThat(page.getTotalElements()).isGreaterThan(pageable.getOffset() + content.size());
 		assertThat(content.size()).isEqualTo(pageSize);
 		assertThat(content).isSortedAccordingTo((new Comparator<Location>() {
 
