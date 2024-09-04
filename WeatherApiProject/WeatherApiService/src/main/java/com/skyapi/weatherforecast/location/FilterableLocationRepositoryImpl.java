@@ -41,9 +41,16 @@ public class FilterableLocationRepositoryImpl implements FilterableLocationRepos
 
 		// Sorting
 		List<Order> listOrder = new ArrayList<>();
+		
 		pageable.getSort().stream().forEach(order -> {
 			System.out.println("Sort Field: " + order.getProperty());
-			listOrder.add(builder.asc(entityRoot.get(order.getProperty())));
+			if(order.isAscending()) {
+				//listOrder.add(builder.asc(entityRoot.get(order.getProperty())));
+				listOrder.add(builder.asc(entityRoot.get(order.getProperty())));
+			}else {
+				listOrder.add(builder.desc(entityRoot.get(order.getProperty())));
+			}
+		
 		});
 
 		entityQuery.orderBy(listOrder);
@@ -62,22 +69,26 @@ public class FilterableLocationRepositoryImpl implements FilterableLocationRepos
 		return listLocations;
 	}
 
-	private Predicate[] createsPredicates(Map<String, Object> filterFields, CriteriaBuilder builder, Root<Location> root) {
-		
-		Predicate[] predicate = new Predicate[filterFields.size()];
+	private Predicate[] createsPredicates(Map<String, Object> filterFields, CriteriaBuilder builder,
+			Root<Location> root) {
+		Predicate[] predicate = new Predicate[filterFields.size() + 1];
+
 		if (!filterFields.isEmpty()) {
-		
+
 			Iterator<String> iterator = filterFields.keySet().iterator();
 			int i = 0;
 			while (iterator.hasNext()) {
 				String fieldName = iterator.next();
 				Object filterValue = filterFields.get(fieldName);
+				System.out.println(fieldName + " => " + filterValue);
 				predicate[i++] = builder.equal(root.get(fieldName), filterValue);
 
 			}
-			
-		
+
 		}
+
+		predicate[predicate.length - 1] = builder.equal(root.get("trashed"), false);
+		
 		return predicate;
 	}
 	

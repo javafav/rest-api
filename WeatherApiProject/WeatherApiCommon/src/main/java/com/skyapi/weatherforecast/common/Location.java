@@ -146,7 +146,7 @@ public class Location {
 
 	@Override
 	public String toString() {
-		return code + " => " + cityName + ", " + (regionName != null ? regionName + ", " : "") + countryName;
+		return  cityName + ", " + (regionName != null ? regionName + ", " : "") + countryName;
 	}
 
 	public RealtimeWeather getRealtimeWeather() {
