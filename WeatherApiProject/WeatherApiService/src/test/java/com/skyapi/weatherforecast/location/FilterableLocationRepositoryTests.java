@@ -38,7 +38,7 @@ public class FilterableLocationRepositoryTests {
 		Sort sort = Sort.by(sortField).ascending();
 		
 		Pageable pageable = PageRequest.of(pageNum -1, pageSize, sort);
-		Page<Location> page = repo.listWithFilters(pageable, Collections.emptyMap());
+		Page<Location> page = repo.listWithFilter(pageable, Collections.emptyMap());
 		List<Location> content = page.getContent();
 		content.forEach(System.out::println);
 
@@ -64,7 +64,7 @@ public class FilterableLocationRepositoryTests {
 		Sort sort = Sort.by(sortField).ascending();
 		
 		Pageable pageable = PageRequest.of(pageNum -1, pageSize, sort);
-		Page<Location> page = repo.listWithFilters(pageable, Collections.emptyMap());
+		Page<Location> page = repo.listWithFilter(pageable, Collections.emptyMap());
 		List<Location> content = page.getContent();
 		content.forEach(System.out::println);
 
@@ -94,7 +94,7 @@ public class FilterableLocationRepositoryTests {
 		filterFields.put("regionName", regionName);
 		
 		Pageable pageable = PageRequest.of(pageNum -1, pageSize, sort);
-		Page<Location> page = repo.listWithFilters(pageable, filterFields);
+		Page<Location> page = repo.listWithFilter(pageable, filterFields);
 		List<Location> content = page.getContent();
 		content.forEach(System.out::println);
 
@@ -125,7 +125,7 @@ public class FilterableLocationRepositoryTests {
 		filterFields.put("countryCode", countryCode);
 		
 		Pageable pageable = PageRequest.of(pageNum -1, pageSize, sort);
-		Page<Location> page = repo.listWithFilters(pageable, filterFields);
+		Page<Location> page = repo.listWithFilter(pageable, filterFields);
 		List<Location> content = page.getContent();
 		
 
@@ -160,7 +160,7 @@ public class FilterableLocationRepositoryTests {
 		filterFields.put("enabled", enabled);
 		
 		Pageable pageable = PageRequest.of(pageNum -1, pageSize, sort);
-		Page<Location> page = repo.listWithFilters(pageable, filterFields);
+		Page<Location> page = repo.listWithFilter(pageable, filterFields);
 		List<Location> content = page.getContent();
 		
 

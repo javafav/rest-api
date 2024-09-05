@@ -58,6 +58,9 @@ public class Location {
 		this.countryName = countryName;
 		this.countryCode = countryCode;
 	}
+	
+
+
 
 	public Location(String code, String cityName, String regionName, String countryName, String countryCode) {
 		this.code = code;
@@ -65,6 +68,12 @@ public class Location {
 		this.regionName = regionName;
 		this.countryName = countryName;
 		this.countryCode = countryCode;
+	}
+	
+	public Location(String code, String cityName, String regionName, String countryName, String countryCode, boolean enabled) {
+	
+		this(code, cityName, regionName, countryName, countryCode);
+		this.enabled = enabled;
 	}
 
 	@JsonIgnore

@@ -96,30 +96,22 @@ public class LocationApiController {
 			@RequestParam(value = "region_name", defaultValue = "", required = false) String regionName)
 			throws BadRequestException {
 
-		String[] sortField = sortOption.split(",");
+		sortOption = validateSortOption(sortOption);
 
-		if (sortField.length > 1) { // sort using multiple fields
-			for (int i = 0; i < sortField.length; i++) {
-				String actualField = sortField[i].replace("-", "");
+		Map<String, Object> filterFields = getFilterFields(enabled, cityName, regionName);
 
-				if (!fieldMapper.containsKey(actualField)) {
+		Page<Location> page = service.listByPage(pageNum - 1, pageSize, sortOption, filterFields);
+		List<Location> locations = page.getContent();
 
-					throw new BadRequestException("Invalid sort field: " + actualField);
-				}
-				sortOption = sortOption.replace(actualField, fieldMapper.get(actualField));
-			}
-		} else {// sort using single field
-
-			String actulField = sortOption.replace("-", "");
-
-			if (!fieldMapper.containsKey(actulField)) {
-
-				throw new BadRequestException("Invalid sort field: " + actulField);
-			}
-
-			sortOption = sortOption.replace(actulField, fieldMapper.get(actulField));
+		if (locations.isEmpty()) {
+			return ResponseEntity.noContent().build();
 		}
+		return ResponseEntity.ok(addPageMetaDataAndLinks(listEntity2ListDTO(locations), page, sortOption, enabled,
+				cityName, regionName));
 
+	}
+
+	private Map<String, Object> getFilterFields(String enabled, String cityName, String regionName) {
 		Map<String, Object> filterFields = new HashMap<>();
 
 		if (!"".equals(enabled)) {
@@ -133,16 +125,37 @@ public class LocationApiController {
 		if (!"".equals(regionName)) {
 			filterFields.put("regionName", regionName);
 		}
+		return filterFields;
+	}
 
-		Page<Location> page = service.listByPage(pageNum - 1, pageSize, sortOption, filterFields);
-		List<Location> locations = page.getContent();
+	private String validateSortOption(String sortOption) throws BadRequestException {
+		String tralsltedSortOptions = sortOption;
+		
+		String[] sortField = sortOption.split(",");
+		System.out.println(sortOption);
 
-		if (locations.isEmpty()) {
-			return ResponseEntity.noContent().build();
+		if (sortField.length > 1) { // sort using multiple fields
+			for (int i = 0; i < sortField.length; i++) {
+				String actualField = sortField[i].replace("-", "");
+
+				if (!fieldMapper.containsKey(actualField)) {
+
+					throw new BadRequestException("Invalid sort field: " + actualField);
+				}
+				tralsltedSortOptions = tralsltedSortOptions.replace(actualField, fieldMapper.get(actualField));
+			}
+		} else {// sort using single field
+
+			String actulField = sortOption.replace("-", "");
+
+			if (!fieldMapper.containsKey(actulField)) {
+
+				throw new BadRequestException("Invalid sort field: " + actulField);
+			}
+
+			tralsltedSortOptions = tralsltedSortOptions.replace(actulField, fieldMapper.get(actulField));
 		}
-		return ResponseEntity.ok(addPageMetaDataAndLinks(listEntity2ListDTO(locations), page, sortOption, enabled,
-				cityName, regionName));
-
+		return tralsltedSortOptions;
 	}
 
 	private CollectionModel<LocationDTO> addPageMetaDataAndLinks(List<LocationDTO> listDTO, Page<Location> pageInfo,

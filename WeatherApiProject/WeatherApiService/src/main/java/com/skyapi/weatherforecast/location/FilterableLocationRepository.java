@@ -9,5 +9,5 @@ import com.skyapi.weatherforecast.common.Location;
 
 public interface FilterableLocationRepository {
 
-	public Page<Location> listWithFilters(Pageable pageable, Map<String, Object> filterFields);
+	public Page<Location> listWithFilter(Pageable pageable, Map<String, Object> filterFields);
 }

@@ -42,36 +42,39 @@ public class LocationService extends AbstractLocationService {
 
 	}
 
-	public Page<Location> listByPage(int pageNum, int pageSize, String sortOption, Map<String, Object> filterFields)
-			throws BadRequestException {
+	public Page<Location> listByPage(int pageNum, int pageSize, String sortOption, Map<String, Object> filterFields) {
+		Sort sort = createMultipleSort(sortOption);
+
+		Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+
+		return repo.listWithFilter(pageable, filterFields);
+
+	}
+
+	private Sort createMultipleSort(String sortOption) {
 		String[] sortFields = sortOption.split(",");
 		Sort sort = null;
 
 		if (sortFields.length > 1) { // sort using multiple fields
 
-			String firstFieldName = sortFields[0];
-			String actulFirstFieldName = sortOption.replace("-", "");
-
-			sort = firstFieldName.startsWith("-") ? Sort.by(actulFirstFieldName).descending()
-					: Sort.by(actulFirstFieldName).ascending();
+			sort = createSingleSort(sortFields[0]);
 
 			for (int i = 1; i < sortFields.length; i++) {
-				String nextFieldName = sortFields[i];
-				String actualNextFieldName = nextFieldName.replace("-", "");
 
-				sort = sort.and(nextFieldName.startsWith("-") ? 
-						Sort.by(actualNextFieldName).descending() : Sort.by(actualNextFieldName).ascending());
+				sort = sort.and(createSingleSort(sortFields[i]));
 			}
 
 		} else {// sort using single field
-			String actulFields = sortOption.replace("-", "");
-			sort = sortOption.startsWith("-") ? Sort.by(actulFields).descending() : Sort.by(actulFields).ascending();
+
+			sort =	createSingleSort(sortOption);
+
 		}
+		return sort;
+	}
 
-		Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-
-		return repo.listWithFilters(pageable, filterFields);
-
+	private Sort createSingleSort(String fieldName) {
+		String actulFields = fieldName.replace("-", "");
+		return fieldName.startsWith("-") ? Sort.by(actulFields).descending() : Sort.by(actulFields).ascending();
 	}
 
 	public Location update(Location locationInRequest) {
