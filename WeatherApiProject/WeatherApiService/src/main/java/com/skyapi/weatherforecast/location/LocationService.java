@@ -43,6 +43,7 @@ public class LocationService extends AbstractLocationService {
 	}
 
 	public Page<Location> listByPage(int pageNum, int pageSize, String sortOption, Map<String, Object> filterFields) {
+		
 		Sort sort = createMultipleSort(sortOption);
 
 		Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
