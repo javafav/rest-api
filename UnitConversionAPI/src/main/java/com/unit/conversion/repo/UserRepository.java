@@ -1,4 +1,4 @@
-package com.unit.conversion.rep;
+package com.unit.conversion.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
