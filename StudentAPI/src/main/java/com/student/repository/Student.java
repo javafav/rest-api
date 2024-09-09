@@ -1,11 +1,23 @@
-package com.student;
+package com.student.repository;
 
 import java.util.Objects;
 
-public class Student {
+import jakarta.annotation.Generated;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "students")
+public class Student {
 	
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
+	@Column(unique = true, nullable = false, length = 30)
 	private String name;
 
 	public Student() {

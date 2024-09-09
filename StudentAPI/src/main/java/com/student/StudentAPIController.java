@@ -2,7 +2,9 @@ package com.student;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.student.repository.Student;
+import com.student.repository.StudentRepository;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
@@ -25,64 +30,58 @@ import jakarta.validation.constraints.Positive;
 @Validated
 public class StudentAPIController {
 
-	private static List<Student> listStudents = new ArrayList<>();
-	private static Integer studentId = 0;
-	
-	static {
-		listStudents.add(new Student(++studentId, "Ali"));
-		listStudents.add(new Student(++studentId, "Usman"));
-	}
-	
+	@Autowired
+	private StudentRepository repo;
+
 	@GetMapping
-	public ResponseEntity<?>getAll(@RequestParam("pageSize") @Min(value = 5, message="Minimun page size is 5") int pageSize,
-			@Max(value = 10, message="Maximum page size is 10") int pageNum){
-		
+	public ResponseEntity<?> getAll(
+			@RequestParam("pageSize") @Min(value = 5, message = "Minimun page size is 5") int pageSize,
+			@Max(value = 10, message = "Maximum page size is 10") int pageNum) {
+
+		List<Student> listStudents = repo.findAll();
+
 		System.out.println("Page Size " + pageSize);
 		System.out.println("Page Num " + pageNum);
-		
-		if(listStudents.isEmpty()) {
-		
+
+		if (listStudents.isEmpty()) {
+
 			return ResponseEntity.noContent().build();
-			
+
 		}
-		
-	   return new ResponseEntity<>(listStudents, HttpStatus.ACCEPTED);
-		
+
+		return new ResponseEntity<>(listStudents, HttpStatus.ACCEPTED);
+
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<?> addStudent(@RequestBody Student student){
-	    student.setId(++studentId);
-		
-	    listStudents.add(student);
-		return new  ResponseEntity<>(student,HttpStatus.CREATED);
+	public ResponseEntity<?> addStudent(@RequestBody Student student) {
+
+		repo.save(student);
+
+		return new ResponseEntity<>(student, HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<?> updateStudent(@RequestBody Student student){
-		if(listStudents.contains(student)) {
-			
-			int indexOf = listStudents.indexOf(student);
-			listStudents.set(indexOf, student);
-			
-			return new ResponseEntity<>(student, HttpStatus.OK);
+	public ResponseEntity<?> updateStudent(@RequestBody Student student) {
+		Student studentInDB = repo.findById(student.getId()).get();
+		if (studentInDB == null) {
+			return ResponseEntity.notFound().build();
+
 		}
-		
-		return ResponseEntity.notFound().build();
-	
+		Student updatedStudnet = repo.save(student);
+		return new ResponseEntity<>(updatedStudnet, HttpStatus.OK);
+
 	}
-	
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") @Positive Integer id){
-	
+	public ResponseEntity<?> delete(@PathVariable("id") @Positive Integer id) {
 		Student student = new Student(id);
-			if(listStudents.contains(student)) {
-				listStudents.remove(student);
-				return ResponseEntity.noContent().build();
-			} else {
-				return ResponseEntity.notFound().build();
-			}
-		
+
+		if (repo.findById(id).isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		repo.delete(student);
+		return ResponseEntity.noContent().build();
+
 	}
 }
