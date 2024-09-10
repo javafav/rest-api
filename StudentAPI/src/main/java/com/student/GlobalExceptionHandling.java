@@ -3,6 +3,7 @@ package com.student;
 import java.util.Date;
 
 import org.slf4j.Logger;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ public class GlobalExceptionHandling  {
 
     @Autowired private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandling.class);
 
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorDTO handleConstraintViolationException(HttpServletRequest request, Exception ex) {
 	

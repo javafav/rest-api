@@ -10,11 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.student.repository.User;
 
-public class CustomUserDetils implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
 	private User user;
 	
-	public CustomUserDetils(User user) {
+	public CustomUserDetails(User user) {
 	
 		this.user = user;
 	}
@@ -35,6 +35,14 @@ public class CustomUserDetils implements UserDetails {
 	public String getUsername() {
 		
 		return user.getUsername();
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

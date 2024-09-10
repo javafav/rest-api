@@ -40,9 +40,9 @@ public class AuthenticationTests {
 		
 		assertThat(authentication.isAuthenticated()).isTrue();
 		
-		CustomUserDetils user =(CustomUserDetils) authentication.getPrincipal();
+		CustomUserDetails user =(CustomUserDetails) authentication.getPrincipal();
 		
-		assertThat(user).isInstanceOf(CustomUserDetils.class);
+		assertThat(user).isInstanceOf(CustomUserDetails.class);
 		assertThat(user.getUsername()).isEqualTo(userName);
 		
 		
