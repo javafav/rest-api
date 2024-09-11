@@ -1,8 +1,6 @@
 package com.student;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,7 +47,7 @@ public class StudentAPIController {
 
 		}
 
-		return new ResponseEntity<>(listStudents, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(listStudents, HttpStatus.OK);
 
 	}
 

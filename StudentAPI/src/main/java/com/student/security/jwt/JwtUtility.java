@@ -55,8 +55,12 @@ public class JwtUtility {
 		try {
 			SecretKeySpec keySpec = new SecretKeySpec(secertKey.getBytes(), SECERT_KEY_ALGORITHM);
 			
-			return Jwts.parser().verifyWith(keySpec)
-					.build().parseSignedClaims(token).getPayload();
+			return Jwts.parser()
+					.verifyWith(keySpec)
+					.build()
+					.parseSignedClaims(token)
+					.getPayload();
+		
 		}catch (ExpiredJwtException ex) {
 			throw new JwtValidationException("Access token expired", ex);
 		} catch (IllegalArgumentException ex) {
