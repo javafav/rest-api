@@ -2,6 +2,7 @@ package com.student.security;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -235,6 +236,17 @@ public class SecurityTests {
 			.andExpect(jsonPath("$.name").isString());			
 			;
 		
+	}
+	
+	@Test
+	public void testDeleteStudnet() throws Exception {
+		Integer studentId = 7;
+		String apiEndpoint = "/api/students/" + studentId;
+		var authorities = AuthorityUtils.createAuthorityList("write");
+		
+		mockMvc.perform(delete(apiEndpoint).content("application/json").with(jwt() .authorities(authorities)))
+		    .andDo(print())
+		    .andExpect(status().isNoContent());
 	}
 	
 }
