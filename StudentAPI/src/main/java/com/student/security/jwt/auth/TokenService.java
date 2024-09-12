@@ -1,11 +1,11 @@
 package com.student.security.jwt.auth;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.encrypt.RsaAlgorithm;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class TokenService {
 	private RefreshTokenRepository refreshTokenRepo;
 
 	@Autowired
-	private PasswordEncoder encoder;
+	private PasswordEncoder passwordEncoder;
 
 	public AuthResponse generateTokens(User user) {
 		String token = jwtUtil.generateAccessToken(user);
@@ -44,12 +44,40 @@ public class TokenService {
 
 		RefreshToken refreshToken = new RefreshToken();
 
-		refreshToken.setToken(encoder.encode(randomUUID));
+		refreshToken.setToken(passwordEncoder.encode(randomUUID));
 		refreshToken.setExpiryTime(new Date(refreshTokenExpirationInMillis));
 		refreshToken.setUser(user);
 
 		refreshTokenRepo.save(refreshToken);
 
+		return response;
+	}
+	
+	public AuthResponse refreshTokens(RefreshTokenRequest request) throws RefreshTokensNotFoundException, RefreshTokensExpiredException {
+		String rawRefreshToken = request.getRefreshToken();
+		
+		List<RefreshToken> listRefreshTokens = refreshTokenRepo.findByUsername(request.getUsername());
+		
+		RefreshToken foundRefreshToken = null;
+		
+		for (RefreshToken token : listRefreshTokens) {
+			if (passwordEncoder.matches(rawRefreshToken, token.getToken())) {
+				foundRefreshToken = token;
+			}
+		}
+		
+		if (foundRefreshToken == null)
+			throw new RefreshTokensNotFoundException();
+		
+		Date currentTime = new Date();
+		
+		if (foundRefreshToken.getExpiryTime().before(currentTime))
+			throw new RefreshTokensExpiredException();
+		
+		AuthResponse response = generateTokens(foundRefreshToken.getUser());
+		
+		refreshTokenRepo.delete(foundRefreshToken);
+		
 		return response;
 	}
 

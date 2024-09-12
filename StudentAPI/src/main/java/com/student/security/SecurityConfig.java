@@ -56,8 +56,8 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(
 				auth -> auth.requestMatchers("/api/oauth/**").permitAll()
 			             	.requestMatchers(HttpMethod.GET, "/api/students").hasAnyAuthority("read", "write")
-			             	.requestMatchers(HttpMethod.POST, "/api/students").hasAuthority("SCOPE_write")
-			             	.requestMatchers(HttpMethod.PUT, "/api/students").hasAuthority("SCOPE_write")
+			             	.requestMatchers(HttpMethod.POST, "/api/students").hasAuthority("write")
+			             	.requestMatchers(HttpMethod.PUT, "/api/students").hasAuthority("write")
 			             	.anyRequest().authenticated())
 		
 		.csrf(csrf -> csrf.disable())

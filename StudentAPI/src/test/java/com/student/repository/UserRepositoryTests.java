@@ -25,10 +25,10 @@ public class UserRepositoryTests {
 	@Test
 	public void testAddNewUser() {
 		User user = new User();
-		user.setUsername("sany");
-		user.setRole("read");
+		user.setUsername("admin");
+		user.setRole("write");
 		
-		String rawPassword = "ynas";
+		String rawPassword = "nimda";
 		String encodedPassword = encoder.encode(rawPassword);
 		user.setPassword(encodedPassword);
 		

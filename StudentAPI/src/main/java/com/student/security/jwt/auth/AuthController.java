@@ -1,6 +1,7 @@
 package com.student.security.jwt.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -50,5 +51,22 @@ public class AuthController {
 			return ResponseEntity.notFound().build();
 		}
 
+	}
+	
+	@PostMapping("/token/refresh")
+	public ResponseEntity<?> refreshToken(@RequestBody @Valid  RefreshTokenRequest request){
+		try {
+		
+			AuthResponse response= tokenService.refreshTokens(request);
+			return ResponseEntity.ok(response);
+			
+		} catch (RefreshTokensNotFoundException | RefreshTokensExpiredException ex) {
+		
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+			
+		} 
+		
+		
 	}
 }

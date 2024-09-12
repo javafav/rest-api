@@ -21,11 +21,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.student.repository.Student;
 import com.student.security.jwt.auth.AuthRequest;
 import com.student.security.jwt.auth.AuthResponse;
+import com.student.security.jwt.auth.RefreshTokenRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,6 +33,7 @@ public class SecurityTests {
 
 	private static final String GET_ACCESS_TOKEN_END_POINT = "/api/oauth/token";
 	private static final String GET_LIST_STUDENT_END_POINT = "/api/students?pageNum=1&pageSize=10";
+	private static final String REFRESH_TOKEN_END_POINT = "/api/oauth//token/refresh";
 	
 	@Autowired MockMvc mockMvc;
 	@Autowired ObjectMapper objectMapper;
@@ -78,8 +79,8 @@ public class SecurityTests {
 	@Test
 	public void testGetAccessSuccess() throws Exception {
 		AuthRequest request = new AuthRequest();
-		request.setUsername("sany");
-		request.setPassword("ynas");
+		request.setUsername("admin");
+		request.setPassword("nimda");
 		
 		String requestBody = objectMapper.writeValueAsString(request);
 		
@@ -170,7 +171,7 @@ public class SecurityTests {
 		student.setName("Nam Ha Minh");
 		
 		String requestBody = objectMapper.writeValueAsString(student);
-		
+		//to make this test works,specify the name in configuration class is  'SCOPE_write'
 		mockMvc.perform(post(apiEndpoint).contentType("application/json").content(requestBody)
 				.with(jwt().jwt(jwt -> jwt.claim("scope", "write"))))
 			.andDo(print())
@@ -188,7 +189,7 @@ public class SecurityTests {
 		Student student = new Student();
 		student.setId(8);
 		student.setName("John Max");
-		
+		//to make this test works,specify the name in configuration class is  'SCOPE_write'
 		var jwt = org.springframework.security.oauth2.jwt.Jwt.withTokenValue("xxxx")
 			.header("alg", "none")
 			.issuer("My Company")
@@ -223,7 +224,7 @@ public class SecurityTests {
 			.build();
 		
 		String requestBody = objectMapper.writeValueAsString(student);
-		
+		//to make this test works,specify the name in configuration class is  'SCOPE_write'
 		var authorities = AuthorityUtils.createAuthorityList("SCOPE_write");
 		
 		var token = new JwtAuthenticationToken(jwt, authorities);
@@ -247,6 +248,61 @@ public class SecurityTests {
 		mockMvc.perform(delete(apiEndpoint).content("application/json").with(jwt() .authorities(authorities)))
 		    .andDo(print())
 		    .andExpect(status().isNoContent());
+	}
+	
+	@Test
+	public void testRefreshTokenBadRequest() throws Exception {
+		
+		RefreshTokenRequest reqeustObject = new RefreshTokenRequest();
+		reqeustObject.setUsername("abcdef");
+		reqeustObject.setRefreshToken("someInvlaidToken");
+		
+		String requestBody = objectMapper.writeValueAsString(reqeustObject);
+		
+		mockMvc.perform(post(REFRESH_TOKEN_END_POINT)
+				.contentType("application/json")
+				.content(requestBody))
+				.andDo(print())
+				.andExpectAll(status().isBadRequest());
+		 		
+	}
+	
+	@Test
+	public void testRefreshTokenFail() throws Exception {
+		
+		RefreshTokenRequest reqeustObject = new RefreshTokenRequest();
+		
+		reqeustObject.setUsername("admin");
+		reqeustObject.setRefreshToken("someInvlaidTokensomeInvlaidTokensomeInvlaidT");
+		
+		String requestBody = objectMapper.writeValueAsString(reqeustObject);
+		
+		mockMvc.perform(post(REFRESH_TOKEN_END_POINT)
+				.contentType("application/json")
+				.content(requestBody))
+				.andDo(print())
+				.andExpectAll(status().isUnauthorized());
+		 		
+	}
+	
+	@Test
+	public void testRefreshTokenSuccess() throws Exception {
+		
+		RefreshTokenRequest reqeustObject = new RefreshTokenRequest();
+		
+		reqeustObject.setUsername("admin");
+		reqeustObject.setRefreshToken("d8d53ebc-1028-493f-b0dd-bc5128d41a77");
+		
+		String requestBody = objectMapper.writeValueAsString(reqeustObject);
+		
+		mockMvc.perform(post(REFRESH_TOKEN_END_POINT)
+				.contentType("application/json")
+				.content(requestBody))
+				.andDo(print())
+				.andExpectAll(status().isOk())
+				.andExpect(jsonPath("$.accessToken").isNotEmpty())
+				.andExpect(jsonPath("$.refreshToken").isNotEmpty());
+		 		
 	}
 	
 }
